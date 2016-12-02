@@ -9,12 +9,17 @@
 import UIKit
 import Firebase
 import FirebaseDatabase
+import AVFoundation
 
 class ViewController: UIViewController {
     
 //    let storage = FIRStorage.storage()
     let ref = FIRDatabase.database().reference()
     var tourArray: NSMutableArray = []
+    var audioDataArray: NSMutableArray = []
+    var audioDataString:String = ""
+    var audioPlayer: AVAudioPlayer?
+    var audioData: NSData!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,18 +57,45 @@ class ViewController: UIViewController {
             
             let passingArray = ((((snapshot.value as AnyObject).value(forKey: "array")) as AnyObject).value(forKey: "audio"))
             
-            let partitionArray = (passingArray as! NSArray?)![1]
+//            print((passingArray as! NSArray?)?.count ?? NSNumber())
+            let arrayCount = (passingArray as! NSArray?)?.count
+            print(arrayCount ?? NSNumber())
             
-            var base64String : String!
+            for i in 0 ..< arrayCount! {
+                let partitionArray = (passingArray as! NSArray?)![i]
+                
+                self.audioDataString = String(format: "%@", partitionArray as! CVarArg)
+                
+                
+                //            var data = Data.fromBase64String(self.audioDataString)
+                
+                self.audioData = NSData(base64Encoded: self.audioDataString, options: [])!
             
-            print(partitionArray)
+                self.audioDataArray.add(self.audioData)
+            }
+            
+//            let partitionArray = (passingArray as! NSArray?)![1]
+//            
+//            self.audioDataString = String(format: "%@", partitionArray as! CVarArg)
+//            
+//            
+////            var data = Data.fromBase64String(self.audioDataString)
+//           
+//            self.audioData = NSData(base64Encoded: self.audioDataString, options: [])!
+            print(self.audioDataArray)
+            
+
+            
             
 //            print("TEST3",passingArray ?? String())
         })
     }
     
     @IBAction func showData(_ sender: Any) {
-        print(self.tourArray)
+        
+        self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+        self.audioPlayer?.prepareToPlay()
+        self.audioPlayer?.play()
     }
 
 }
