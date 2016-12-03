@@ -11,7 +11,7 @@ import Firebase
 import FirebaseDatabase
 import AVFoundation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
 //    let storage = FIRStorage.storage()
     let ref = FIRDatabase.database().reference()
@@ -20,28 +20,18 @@ class ViewController: UIViewController {
     var audioDataString:String = ""
     var audioPlayer: AVAudioPlayer?
     var audioData: NSData!
+    var selectedAudio: NSNumber!
 
+    @IBOutlet var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
 
         
-    
-    }
-
-    @IBAction func getData(_ sender: Any) {
         
         let conditionRef = ref.child("tours").child("france")
         
         conditionRef.observe(FIRDataEventType.value, with: {(snapshot) in
-//            let postDict = snapshot.value as? [String: AnyObject] ?? [:]
-            var tempItems = [NSDictionary]()
-//            print("TEST1",tempItems)
-            for item in snapshot.children {
-                let child = item as! FIRDataSnapshot
-//                print("TEST2",child)
-
-            }
             
             print("COMPLETE")
         })
@@ -49,15 +39,15 @@ class ViewController: UIViewController {
         
         
         conditionRef.observe(.value, with: { snapshot in
-//            print(snapshot.value ?? String())
             
-            self.tourArray.add(snapshot.value ?? String())
+            self.tourArray.add((((snapshot.value as AnyObject).value(forKey: "array")) as AnyObject).value(forKey: "title") ?? String())
             
-//            let passingArray = (((self.tourArray.value(forKey: "array")) as AnyObject).value(forKey: "audio"))
+            let array = [self.tourArray.lastObject!]
+            
+            print(array[0])
             
             let passingArray = ((((snapshot.value as AnyObject).value(forKey: "array")) as AnyObject).value(forKey: "audio"))
-            
-//            print((passingArray as! NSArray?)?.count ?? NSNumber())
+
             let arrayCount = (passingArray as! NSArray?)?.count
             print(arrayCount ?? NSNumber())
             
@@ -66,36 +56,51 @@ class ViewController: UIViewController {
                 
                 self.audioDataString = String(format: "%@", partitionArray as! CVarArg)
                 
-                
-                //            var data = Data.fromBase64String(self.audioDataString)
-                
                 self.audioData = NSData(base64Encoded: self.audioDataString, options: [])!
-            
+                
                 self.audioDataArray.add(self.audioData)
+                
+                
             }
             
-//            let partitionArray = (passingArray as! NSArray?)![1]
-//            
-//            self.audioDataString = String(format: "%@", partitionArray as! CVarArg)
-//            
-//            
-////            var data = Data.fromBase64String(self.audioDataString)
-//           
-//            self.audioData = NSData(base64Encoded: self.audioDataString, options: [])!
             print(self.audioDataArray)
-            
+            self.tableView.reloadData()
 
-            
-            
-//            print("TEST3",passingArray ?? String())
         })
     }
+
     
-    @IBAction func showData(_ sender: Any) {
+         func numberOfSections(in tableView: UITableView) -> Int {
+            // #warning Incomplete implementation, return the number of sections
+            return 1
+        }
+    
+         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            // #warning Incomplete implementation, return the number of rows
+            return self.audioDataArray.count
+        }
+    
+    
+         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+    
+    
+            cell.textLabel?.text = String(format: "%d", indexPath.row)
+            return cell
+        }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+        
+        self.selectedAudio = indexPath.row as NSNumber!
+        print(self.selectedAudio)
+        
+        let indexToPlay = self.selectedAudio.intValue
+        
+        self.audioPlayer = try! AVAudioPlayer(data: self.audioDataArray[indexToPlay] as! Data, fileTypeHint: AVFileTypeWAVE)
         self.audioPlayer?.prepareToPlay()
         self.audioPlayer?.play()
+
     }
 
 }
