@@ -7,18 +7,36 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
 
 class TourDetailViewController: UIViewController {
-
     
+    
+    let ref = FIRDatabase.database().reference()
+    var tourId: NSString!
     @IBOutlet var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        print("HERES THE NAME", self.tourId)
         // Do any additional setup after loading the view.
+        
+        let registeredUserRef = ref.child("tours").child(self.tourId as String)
+        
+        registeredUserRef.observe(.value, with: { snapshot in
+            
+            for item in snapshot.children {
+                let child = item as! FIRDataSnapshot
+                let dict = child.value as! NSDictionary
+                
+                print(dict)
+            }
+            
+        })
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
