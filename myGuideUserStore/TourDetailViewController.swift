@@ -17,6 +17,10 @@ class TourDetailViewController: UIViewController {
     var tourId: NSString!
     @IBOutlet var tableView: UITableView!
     
+    var getObjects = ["country", "attraction", "title", "price", "keyWords", "description"]
+    var passingDict = [NSDictionary]()
+    
+    @IBOutlet var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -25,16 +29,29 @@ class TourDetailViewController: UIViewController {
         
         let registeredUserRef = ref.child("tours").child(self.tourId as String)
         
-        registeredUserRef.observe(.value, with: { snapshot in
+        
+        for i in 0 ..< self.getObjects.count {
             
-            for item in snapshot.children {
-                let child = item as! FIRDataSnapshot
-                let dict = child.value as! NSDictionary
+            registeredUserRef.child(self.getObjects[i]).observe(.value, with: { snapshot in
                 
-                print(dict)
-            }
-            
-        })
+//                print(snapshot.value ?? String())
+                let obj = snapshot.value
+                let newDict: NSMutableDictionary = NSMutableDictionary()
+                
+                newDict.setValue(obj, forKey: self.getObjects[i])
+                
+//                print(newDict)
+                
+                self.passingDict.append(newDict)
+                
+                print(self.passingDict)
+                
+                self.reloadInputViews()
+            })
+        }
+        
+        
+
     }
     
     override func didReceiveMemoryWarning() {
