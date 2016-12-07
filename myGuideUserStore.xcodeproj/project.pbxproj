@@ -17,6 +17,9 @@
 		3202C7E11DECBE0C003A8B4C /* StoreTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3202C7E01DECBE0C003A8B4C /* StoreTableViewController.swift */; };
 		3202C7E31DECBF36003A8B4C /* StoreCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3202C7E21DECBF36003A8B4C /* StoreCell.xib */; };
 		3202C7E51DECC3DD003A8B4C /* TourDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3202C7E41DECC3DD003A8B4C /* TourDetailViewController.swift */; };
+		320C6D1E1DF88CD200B60430 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320C6D1D1DF88CD200B60430 /* CoreData.framework */; };
+		320C6D201DF8908800B60430 /* MyToursViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320C6D1F1DF8908800B60430 /* MyToursViewController.swift */; };
+		320C6D221DF8B92A00B60430 /* TourViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320C6D211DF8B92A00B60430 /* TourViewController.swift */; };
 		323CB11D1DF71445006ED9A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323CB11C1DF71445006ED9A2 /* ViewController.swift */; };
 		323CB11F1DF714D1006ED9A2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */; };
 		324E90DC1DF0EF3C00D24175 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 324E90DB1DF0EF3C00D24175 /* GoogleService-Info.plist */; };
@@ -63,6 +66,9 @@
 		3202C7E01DECBE0C003A8B4C /* StoreTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StoreTableViewController.swift; path = ../StoreTableViewController.swift; sourceTree = "<group>"; };
 		3202C7E21DECBF36003A8B4C /* StoreCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreCell.xib; sourceTree = "<group>"; };
 		3202C7E41DECC3DD003A8B4C /* TourDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TourDetailViewController.swift; sourceTree = "<group>"; };
+		320C6D1D1DF88CD200B60430 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		320C6D1F1DF8908800B60430 /* MyToursViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyToursViewController.swift; sourceTree = "<group>"; };
+		320C6D211DF8B92A00B60430 /* TourViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TourViewController.swift; sourceTree = "<group>"; };
 		323CB11C1DF71445006ED9A2 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		324E90DB1DF0EF3C00D24175 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -81,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				320C6D1E1DF88CD200B60430 /* CoreData.framework in Frameworks */,
 				7B78F70EFF30A7CAA06146D3 /* Pods_myGuideUserStore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,6 +143,8 @@
 				32FF8CE11DF7246C00A5CAA5 /* StoreViewController.swift */,
 				323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */,
 				3202C7E41DECC3DD003A8B4C /* TourDetailViewController.swift */,
+				320C6D1F1DF8908800B60430 /* MyToursViewController.swift */,
+				320C6D211DF8B92A00B60430 /* TourViewController.swift */,
 				3202C7E21DECBF36003A8B4C /* StoreCell.xib */,
 				3202C7AF1DECBBE7003A8B4C /* Main.storyboard */,
 				3202C7B51DECBBE7003A8B4C /* Assets.xcassets */,
@@ -168,6 +177,7 @@
 		4106B22C298A071714931533 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				320C6D1D1DF88CD200B60430 /* CoreData.framework */,
 				4A508D9F738E34ABC7DFA3A0 /* Pods_myGuideUserStore.framework */,
 				C5C2A5894366EB52FFB4C483 /* Pods_myGuideUserStoreTests.framework */,
 				16F18B0523D4CD25E6977F40 /* Pods_myGuideUserStoreUITests.framework */,
@@ -479,6 +489,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				320C6D201DF8908800B60430 /* MyToursViewController.swift in Sources */,
+				320C6D221DF8B92A00B60430 /* TourViewController.swift in Sources */,
 				323CB11F1DF714D1006ED9A2 /* LoginViewController.swift in Sources */,
 				323CB11D1DF71445006ED9A2 /* ViewController.swift in Sources */,
 				3202C7E11DECBE0C003A8B4C /* StoreTableViewController.swift in Sources */,

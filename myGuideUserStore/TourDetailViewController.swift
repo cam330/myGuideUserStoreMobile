@@ -9,46 +9,38 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import CoreData
 
 class TourDetailViewController: UIViewController {
     
     
     let ref = FIRDatabase.database().reference()
     var tourId: NSString!
+
     @IBOutlet var tableView: UITableView!
+
+    var data: NSData!
     
-    var getObjects = ["country", "attraction", "title", "price", "keyWords", "description"]
-    var passingDict = [NSDictionary]()
+    var namesArray: NSDictionary!
     
     @IBOutlet var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
 
         print("HERES THE NAME", self.tourId)
-        // Do any additional setup after loading the view.
+        
         
         let registeredUserRef = ref.child("tours").child(self.tourId as String)
         
         
-        for i in 0 ..< self.getObjects.count {
-            
-            registeredUserRef.child(self.getObjects[i]).observe(.value, with: { snapshot in
+            registeredUserRef.observe(.value, with: { snapshot in
                 
-//                print(snapshot.value ?? String())
-                let obj = snapshot.value
-                let newDict: NSMutableDictionary = NSMutableDictionary()
                 
-                newDict.setValue(obj, forKey: self.getObjects[i])
-                
-//                print(newDict)
-                
-                self.passingDict.append(newDict)
-                
-                print(self.passingDict)
-                
-                self.reloadInputViews()
+                self.namesArray = snapshot.value as! NSDictionary!
+                print(self.namesArray)
+                print(self.namesArray.value(forKey: "keyWords") ?? String())
             })
-        }
+
         
         
 
@@ -58,6 +50,62 @@ class TourDetailViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func downloadTour(_ sender: Any) {
+
+        let context = getContext()
+        let entity = NSEntityDescription.entity(forEntityName: "Tour", in: context)
+        
+        let tour = NSManagedObject(entity: entity!, insertInto: context)
+        
+        let audioRef = ref.child("audio").child(self.tourId as String)
+        
+        audioRef.observe(.value, with: { snapshot in
+
+            
+            let dict = snapshot.value as! NSDictionary
+            let points = dict.value(forKey: "points") ?? NSDictionary()
+            
+//            print(points)
+            
+            self.data = NSKeyedArchiver.archivedData(withRootObject: points) as NSData
+            
+            print(self.data)
+            
+            tour.setValue(self.tourId, forKey: "tourId")
+            tour.setValue(self.namesArray.value(forKey: "attraction") ?? String(), forKey: "tourAttraction")
+            tour.setValue(self.namesArray.value(forKey: "country") ?? String(), forKey: "tourCountry")
+            tour.setValue(self.namesArray.value(forKey: "title") ?? String(), forKey: "tourTitle")
+            tour.setValue(self.data, forKey: "tourPoints")
+            
+            do{
+                try context.save()
+                print("Saved!")
+            } catch let error as NSError {
+                print("Could not save \(error),\(error.userInfo)")
+            } catch {
+                
+            }
+
+        })
+        
+
+    }
+
+    
+    
+    func getContext () -> NSManagedObjectContext {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.persistentContainer.viewContext
+    }
+    
+//    func storeTour (tourId: String) {
+//        
+//    }
+//
+//    @IBAction func downloadTour(_ sender: Any) {
+//        
+//    }
     
     
     // MARK: - Table view data source
