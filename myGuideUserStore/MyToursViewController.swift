@@ -16,6 +16,7 @@ class MyTourCell: UITableViewCell {
     @IBOutlet var duration: UILabel!
     @IBOutlet var expireTimeLabel: UILabel!
     @IBOutlet var keyWordsLabel: UILabel!
+    var tourId:String!
 }
 
 class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -24,6 +25,10 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
     var savedTourId: String!
     var objToPass: NSManagedObject!
     @IBOutlet var tableView: UITableView!
+    var tourId: String!
+    var tourToPass: Any!
+    var toursArray: NSArray!
+//    var tourObject: Any!
     
 
     override func viewDidLoad() {
@@ -41,16 +46,16 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
             print("num of results = \(searchResults.count)")
             numberOfTours = searchResults.count
             
+            print(searchResults)
+            self.toursArray = searchResults as NSArray!;
+//            print(self.toursArray[1])
+//            self.tourObject = searchResults;
+//            print(self.tourObject.)
+            
             for tour in searchResults as [NSManagedObject] {
                 print("\(tour.value(forKey: "tourId") as! String)")
                 savedTourId = tour.value(forKey: "tourId") as! String
-//                print("\(tour.value(forKey: "tourPoints"))")
-//                print("\(tour)")
-                let valueDict = tour.value(forKey: "tourPoints")
-                let dictionary: NSArray? = NSKeyedUnarchiver.unarchiveObject(with: valueDict as! Data) as? NSArray
-//                print(dictionary ?? NSArray())
                 self.objToPass = tour
-                print(self.objToPass)
                 self.tableView.reloadData()
             }
         } catch {
@@ -79,14 +84,18 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
          func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: "tourCell", for: indexPath)as! MyTourCell
     
-    
-            cell.titleLabel.text = self.objToPass.value(forKey: "tourTitle") as! String?
-            cell.locationLabel.text = "\(self.objToPass.value(forKey: "tourAttraction") as! String), \(self.objToPass.value(forKey: "tourCountry") as! String)"
+            print("THIS", toursArray[indexPath.row])
+            
+            cell.titleLabel.text = (toursArray[indexPath.row] as AnyObject).value(forKey: "tourTitle") as? String
+            cell.locationLabel.text = "\((toursArray[indexPath.row] as AnyObject).value(forKey: "tourAttraction") as! String), \((toursArray[indexPath.row] as AnyObject).value(forKey: "tourCountry") as! String)"
+            cell.tourId = self.objToPass.value(forKey: "tourId") as! String?
             return cell
         }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.cellForRow(at: indexPath)as! MyTourCell
+        
+        self.tourToPass = toursArray.object(at: indexPath.row);
         
         [self.performSegue(withIdentifier: "showTourSegue", sender: self)]
     }
@@ -107,7 +116,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
                 try getContext().save()
                 numberOfTours = 0
                 savedTourId = nil
-                tableView.deleteRows(at:[indexPath], with: UITableViewRowAnimation.fade)
+//                tableView.deleteRows(at:[indexPath], with: UITableViewRowAnimation.fade)
                 
             } catch {
                 
@@ -123,7 +132,9 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showTourSegue" {
             
-            var tourPage = segue.destination as? TourViewController
+            let tourPage = segue.destination as? TourViewController
+            
+            tourPage?.theTour = self.tourToPass
             
         }
     }

@@ -443,11 +443,11 @@
                                         <rect key="frame" x="0.0" y="28" width="343" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yGY-Hx-2af" id="aKG-ld-fth">
-                                            <rect key="frame" x="0.0" y="0.0" width="343" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="343" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ffN-7A-5la">
-                                                    <rect key="frame" x="15" y="0.0" width="313" height="43"/>
+                                                    <rect key="frame" x="15" y="0.0" width="313" height="43.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -699,7 +699,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="125"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Cl3-EK-QWB" id="2wK-nn-Ilt">
-                                            <rect key="frame" x="0.0" y="0.0" width="342" height="124"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="125"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Title of The Tour Here" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xlo-sN-J28">
@@ -784,12 +784,26 @@
                     <view key="view" contentMode="scaleToFill" id="ZK6-Hb-O8W">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Notre Dame" translatesAutoresizingMaskIntoConstraints="NO" id="Ovt-1G-BcO">
+                                <rect key="frame" x="0.0" y="64" width="375" height="508"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fT7-bM-mDX" firstAttribute="top" secondItem="Ovt-1G-BcO" secondAttribute="bottom" constant="95" id="EAm-OD-HAg"/>
+                            <constraint firstItem="Ovt-1G-BcO" firstAttribute="leading" secondItem="ZK6-Hb-O8W" secondAttribute="leading" id="cH8-L1-p9A"/>
+                            <constraint firstItem="Ovt-1G-BcO" firstAttribute="top" secondItem="bzn-Ct-hhB" secondAttribute="bottom" id="hH0-LG-wBp"/>
+                            <constraint firstAttribute="trailing" secondItem="Ovt-1G-BcO" secondAttribute="trailing" id="klO-rY-hNG"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="tourMap" destination="Ovt-1G-BcO" id="IWH-dU-kkh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0gK-12-GKp" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6617" y="51"/>
+            <point key="canvasLocation" x="6617" y="54"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ljw-1q-ahf">
@@ -849,6 +863,7 @@
     </scenes>
     <resources>
         <image name="IMG_0802" width="1728" height="1762"/>
+        <image name="Notre Dame" width="783" height="1584"/>
         <image name="chichenitza" width="200" height="150"/>
     </resources>
 </document>
