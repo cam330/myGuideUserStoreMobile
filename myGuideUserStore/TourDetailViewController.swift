@@ -16,6 +16,8 @@ class TourDetailViewController: UIViewController {
     
     let ref = FIRDatabase.database().reference()
     var tourId: NSString!
+    
+    var downloadCount = NSNumber()
 
     @IBOutlet var tableView: UITableView!
 
@@ -28,6 +30,7 @@ class TourDetailViewController: UIViewController {
         super.viewDidLoad()
 
         print("HERES THE NAME", self.tourId)
+        print("DOWNLOADS!!!", self.downloadCount)
         
         
         let registeredUserRef = ref.child("tours").child(self.tourId as String)
@@ -88,6 +91,8 @@ class TourDetailViewController: UIViewController {
             }
 
         })
+        
+//        ref.child("tours").child(self.)
         
 
     }

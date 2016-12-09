@@ -17,6 +17,7 @@ class TourTableViewCell: UITableViewCell {
     @IBOutlet var tourKeyWordsLabel: UILabel!
     @IBOutlet var tourGuideNameLabel: UILabel!
     var tourId: NSString!
+    var downloadCount: NSNumber!
 }
 
 class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -28,6 +29,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var nextArray: NSArray = []
     var passingDict = [NSDictionary]()
     var tourId: NSString!
+    var downloadCount: NSNumber!
 
     @IBOutlet var tableView: UITableView!
 
@@ -105,6 +107,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let stringToPresent = (self.passingDict[indexPath.row].value(forKey: "keys") as! NSArray).componentsJoined(by: ", ")
             print(stringToPresent)
             cell.tourKeyWordsLabel.text = "\(stringToPresent)"
+            cell.downloadCount = (self.passingDict[indexPath.row].value(forKey: "downloads")) as! NSNumber!
             print(cell.tourId)
         }
         return cell
@@ -116,7 +119,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         print(cell.tourId)
         
-        self.tourId = cell.tourId;
+        self.tourId = cell.tourId
+        self.downloadCount = cell.downloadCount
         
         [self.performSegue(withIdentifier: "showTourDetails", sender: self)]
     }
@@ -130,6 +134,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let nextScene = segue.destination as? TourDetailViewController
             
             nextScene?.tourId = self.tourId
+            nextScene?.downloadCount = self.downloadCount
             
 
         }

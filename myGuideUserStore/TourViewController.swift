@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import Firebase
 import AVFoundation
+import FirebaseAuth
 
 class TourViewController: UIViewController, UINavigationBarDelegate {
+    
+    var ref: FIRDatabaseReference!
     
     @IBOutlet var tourMap: UIImageView!
     var theTour: Any!
@@ -21,15 +25,21 @@ class TourViewController: UIViewController, UINavigationBarDelegate {
     
     var audioDataString:String = ""
     
+    var blurEffectView:UIVisualEffectView = UIVisualEffectView()
+    
     let dataArray:NSMutableArray = []
+    
+    var reviewView:ReviewView = ReviewView()
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        print(theTour)
+        self.ref = FIRDatabase.database().reference()
         
+//        print("DATOUR",theTour)
         
+        self.reviewView.cancelButton.addTarget(self, action: #selector(submitReview), for: UIControlEvents.touchUpInside)
         
         self.navigationItem.rightBarButtonItem =  UIBarButtonItem(title: "End", style: .plain, target: self, action: #selector(endTourButton))
         
@@ -100,11 +110,47 @@ class TourViewController: UIViewController, UINavigationBarDelegate {
     
     @IBAction func endTourButton(sender: UIButton){
         
-        let myView = UIView(frame: CGRect(x: self.view.center.x - 150, y: self.view.center.y - 250, width: 300, height: 300))
-        myView.backgroundColor = UIColor.blue
-        let title = 
-        self.tourMap.addSubview(myView)
-        self.tourMap.bringSubview(toFront: myView)
+//        let newView = ReviewView(frame: CGRect(x: 0, y: 0, width: 250, height: 100))
+////        myView.backgroundColor = UIColor.blue
+////        let title =
+//        self.view.addSubview(newView)
+//        self.tourMap.bringSubview(toFront: newView)
+        
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.extraLight)
+        self.blurEffectView = UIVisualEffectView(effect: blurEffect)
+        self.blurEffectView.frame = view.bounds
+
+        self.reviewView = ReviewView(frame: CGRect(x: self.tourMap.center.x - 125, y: self.tourMap.center.y - 175, width: 250, height: 300))
+        self.reviewView.submitButton.addTarget(self, action: #selector(submitReview(sender:)), for: .touchUpInside)
+        self.reviewView.cancelButton.addTarget(self, action: #selector(cancelReview(sender:)), for: .touchUpInside)
+        self.tourMap.addSubview(blurEffectView)
+        self.tourMap.addSubview(self.reviewView)
+        self.tourMap.bringSubview(toFront: self.reviewView)
+        
+//        reviewView.delegate = self
+    }
+    
+    @IBAction func submitReview(sender: UIButton!) {
+        
+        let user = FIRAuth.auth()?.currentUser
+        
+        let tourId = (theTour as AnyObject).value(forKey: "tourId")
+        
+        let commentText = self.reviewView.commentsTextView.text ?? String()
+        let rating = self.reviewView.starRatingView.rating
+        let userId = user?.uid ?? String()
+        let reviewDate = NSDate().timeIntervalSince1970 * 1000
+
+        print(commentText, rating, userId, reviewDate)
+        
+        self.ref.child("tours").child(tourId as! String).child("reviews").child(userId).setValue(["rating": rating, "comment": commentText, "datePosted": reviewDate])
+        
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func cancelReview(sender: UIButton!) {
+        self.reviewView.removeFromSuperview()
+        self.blurEffectView.removeFromSuperview()
     }
     
     @IBAction func pointSelect(sender: UIButton!){
@@ -115,7 +161,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate {
 //        self.audioDataString = String(format: "%@", passingData as! CVarArg)
 //        self.audioData = NSData(base64Encoded: self.audioDataString, options: [])!
         print(self.dataArray.object(at: buttonInt!))
-       self.audioData = self.dataArray.object(at: buttonInt!) as! NSData
+        self.audioData = self.dataArray.object(at: buttonInt!) as! NSData
         
         
         

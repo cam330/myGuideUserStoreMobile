@@ -136,6 +136,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             tourPage?.theTour = self.tourToPass
             
+            
         }
     }
  
