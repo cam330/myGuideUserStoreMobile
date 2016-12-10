@@ -61,6 +61,8 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
         } catch {
             print("Error with request: \(error)")
         }
+
+
     }
     
     func getContext () -> NSManagedObjectContext {

@@ -25,6 +25,16 @@ class TourDetailViewController: UIViewController {
     
     var downloadCount: Int!
     
+    var audioDataString:String = ""
+    
+    var audioData: NSData!
+    
+    var dataArray:NSMutableArray = []
+    
+    var audioDataData: NSData!
+    
+    let audioArray:NSMutableArray = []
+    
     @IBOutlet var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,23 +84,64 @@ class TourDetailViewController: UIViewController {
 
             
             let dict = snapshot.value as! NSDictionary
-            let points = dict.value(forKey: "points") ?? NSDictionary()
+            var points = dict.value(forKey: "points") ?? NSDictionary()
             
-//            print(points)
+//            print("POINTS TO WRAP", (points as AnyObject).count)
+            
+            
+            for i in 0 ..< (points as AnyObject).count {
+                let passingData = ((points as AnyObject).object(at: i) as AnyObject).value(forKey: "audio") as! String
+                
+                //            print(passingData)
+                let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
+                //            print(nsd)
+                
+                
+                
+                self.audioDataString = String(format: "%@", passingData as CVarArg)
+                
+                self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
+                
+//                print(self.audioData)
+                print("DONE HERE")
+                
+                self.dataArray.insert(self.audioData, at: i)
+                
+                //            print(dataArray)
+                
+                //            print("THAT", self.audioData ?? String())
+                
+//                self.audioArray.insert(self.audioData, at: i)
+
+            }
+            
+            
+//            print("DATA", self.dataArray)
+
+            
             
             self.data = NSKeyedArchiver.archivedData(withRootObject: points) as NSData
+            self.audioDataData = NSKeyedArchiver.archivedData(withRootObject: self.dataArray) as NSData
             
-            print(self.data)
+            print(self.audioDataData)
             
             tour.setValue(self.tourId, forKey: "tourId")
             tour.setValue(self.namesArray.value(forKey: "attraction") ?? String(), forKey: "tourAttraction")
             tour.setValue(self.namesArray.value(forKey: "country") ?? String(), forKey: "tourCountry")
             tour.setValue(self.namesArray.value(forKey: "title") ?? String(), forKey: "tourTitle")
             tour.setValue(self.data, forKey: "tourPoints")
+            tour.setValue(self.audioDataData, forKey: "tourPointsAudio")
             
             do{
                 try context.save()
                 print("Saved!")
+                
+                let viewControllers: [UIViewController] = self.navigationController!.viewControllers ;
+                for aViewController in viewControllers {
+                    if(aViewController is MyToursViewController){
+                        self.navigationController!.popToViewController(aViewController, animated: true);
+                    }
+                }
             } catch let error as NSError {
                 print("Could not save \(error),\(error.userInfo)")
             } catch {

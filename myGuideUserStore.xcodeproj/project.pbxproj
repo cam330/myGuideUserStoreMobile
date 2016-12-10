@@ -25,6 +25,8 @@
 		323CB11D1DF71445006ED9A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323CB11C1DF71445006ED9A2 /* ViewController.swift */; };
 		323CB11F1DF714D1006ED9A2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */; };
 		324E90DC1DF0EF3C00D24175 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 324E90DB1DF0EF3C00D24175 /* GoogleService-Info.plist */; };
+		32F5FB801DFC8215002521F5 /* pointDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */; };
+		32F5FB821DFC82E1002521F5 /* pointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F5FB811DFC82E1002521F5 /* pointDetailView.swift */; };
 		32FF8CE21DF7246C00A5CAA5 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FF8CE11DF7246C00A5CAA5 /* StoreViewController.swift */; };
 		7B78F70EFF30A7CAA06146D3 /* Pods_myGuideUserStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A508D9F738E34ABC7DFA3A0 /* Pods_myGuideUserStore.framework */; };
 		BC613A7E34CF6437F0E5F3DD /* Pods_myGuideUserStoreUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16F18B0523D4CD25E6977F40 /* Pods_myGuideUserStoreUITests.framework */; };
@@ -76,6 +78,8 @@
 		323CB11C1DF71445006ED9A2 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		324E90DB1DF0EF3C00D24175 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = pointDetailView.xib; sourceTree = "<group>"; };
+		32F5FB811DFC82E1002521F5 /* pointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pointDetailView.swift; sourceTree = "<group>"; };
 		32FF8CE01DF719E500A5CAA5 /* myGuideUserStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myGuideUserStore.entitlements; sourceTree = "<group>"; };
 		32FF8CE11DF7246C00A5CAA5 /* StoreViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreViewController.swift; sourceTree = "<group>"; };
 		3934AEF75D6110B8C0560798 /* Pods-myGuideUserStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myGuideUserStore.release.xcconfig"; path = "Pods/Target Support Files/Pods-myGuideUserStore/Pods-myGuideUserStore.release.xcconfig"; sourceTree = "<group>"; };
@@ -149,10 +153,12 @@
 				3202C7E41DECC3DD003A8B4C /* TourDetailViewController.swift */,
 				320C6D1F1DF8908800B60430 /* MyToursViewController.swift */,
 				320C6D211DF8B92A00B60430 /* TourViewController.swift */,
-				3202C7E21DECBF36003A8B4C /* StoreCell.xib */,
+				32F5FB811DFC82E1002521F5 /* pointDetailView.swift */,
+				32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */,
 				321663721DFA23660047A315 /* ReviewView.swift */,
 				3216636E1DFA1DEF0047A315 /* endRatingView.xib */,
 				3202C7AF1DECBBE7003A8B4C /* Main.storyboard */,
+				3202C7E21DECBF36003A8B4C /* StoreCell.xib */,
 				3202C7B51DECBBE7003A8B4C /* Assets.xcassets */,
 				3202C7B71DECBBE7003A8B4C /* LaunchScreen.storyboard */,
 				3202C7BA1DECBBE7003A8B4C /* Info.plist */,
@@ -333,6 +339,7 @@
 				3202C7B61DECBBE7003A8B4C /* Assets.xcassets in Resources */,
 				324E90DC1DF0EF3C00D24175 /* GoogleService-Info.plist in Resources */,
 				3202C7B11DECBBE7003A8B4C /* Main.storyboard in Resources */,
+				32F5FB801DFC8215002521F5 /* pointDetailView.xib in Resources */,
 				3202C7E31DECBF36003A8B4C /* StoreCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -500,6 +507,7 @@
 				320C6D201DF8908800B60430 /* MyToursViewController.swift in Sources */,
 				320C6D221DF8B92A00B60430 /* TourViewController.swift in Sources */,
 				323CB11F1DF714D1006ED9A2 /* LoginViewController.swift in Sources */,
+				32F5FB821DFC82E1002521F5 /* pointDetailView.swift in Sources */,
 				323CB11D1DF71445006ED9A2 /* ViewController.swift in Sources */,
 				3202C7E11DECBE0C003A8B4C /* StoreTableViewController.swift in Sources */,
 				3202C7AC1DECBBE7003A8B4C /* AppDelegate.swift in Sources */,

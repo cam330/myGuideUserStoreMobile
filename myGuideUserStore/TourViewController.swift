@@ -19,6 +19,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     @IBOutlet var playPauseButton: UIButton!
     @IBOutlet var tourMap: UIImageView!
     var theTour: Any!
+    var tourPoints: NSArray!
     var tourAudio: NSArray!
     
     var audioPlayer: AVAudioPlayer?
@@ -29,11 +30,13 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     
     var blurEffectView:UIVisualEffectView = UIVisualEffectView()
     
-    let dataArray:NSMutableArray = []
+    var dataArray:NSMutableArray = []
     
     var buttonInt: Int!
     
     var reviewView:ReviewView = ReviewView()
+    
+    var pointDetails:pointDetailView = pointDetailView()
     
     @IBOutlet var playingLabel: UILabel!
     
@@ -41,11 +44,17 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+        
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(gesture:)))
+        swipeUp.direction = UISwipeGestureRecognizerDirection.up
+        self.view.addGestureRecognizer(swipeUp)
+        
         self.ref = FIRDatabase.database().reference()
         
         
-        print("DATOUR",theTour)
+//        print("DATOUR",theTour)
         
         self.reviewView.cancelButton.addTarget(self, action: #selector(submitReview), for: UIControlEvents.touchUpInside)
         
@@ -54,20 +63,25 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         let valueDict = (theTour as AnyObject).value(forKey: "tourPoints")
         let tourAudioArray: NSArray? = NSKeyedUnarchiver.unarchiveObject(with: valueDict as! Data) as? NSArray
         
-        self.tourAudio = NSKeyedUnarchiver.unarchiveObject(with: valueDict as! Data) as? NSArray
+        self.tourPoints = NSKeyedUnarchiver.unarchiveObject(with: valueDict as! Data) as? NSArray
         
-        print(tourAudioArray?.count ?? Int())
+        let audios = (theTour as AnyObject).value(forKey: "tourPointsAudio")
+        self.dataArray = (NSKeyedUnarchiver.unarchiveObject(with: audios as! Data) as? NSMutableArray)!
+        
+        
+        
+//        print(tourAudioArray?.count ?? Int())
         let count = tourAudioArray?.count ?? Int()
 //        print(tourAudioArray! as NSArray)
         
-        print(self.tourMap.frame.size)
+//        print(self.tourMap.frame.size)
         self.tourMap.isUserInteractionEnabled = true
         for i in 0 ..< count {
             let tourSizes = tourAudioArray?.object(at: i)
             let percentFromLeft = (tourSizes as AnyObject).value(forKey: "percentTop") ?? String()
             let percentFromTop = (tourSizes as AnyObject).value(forKey: "percentLeft") ?? String()
             
-            print("PERC", percentFromLeft, percentFromTop)
+//            print("PERC", percentFromLeft, percentFromTop)
         
             let topPercentDecimal = percentFromTop as! Double / 100
             let leftPercentDecimal = percentFromLeft as! Double / 100
@@ -76,7 +90,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
             let pointPlacementLeft = leftPercentDecimal * Double(self.tourMap.frame.size.height)
         
         
-            print(pointPlacementTop, pointPlacementLeft)
+//            print(pointPlacementTop, pointPlacementLeft)
         
             let pointButton = UIButton()
             pointButton.setTitle("\(i+1)", for: .normal)
@@ -91,37 +105,54 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         
 //        let dataArray:NSMutableArray = []
         
-        for i in 0 ..< count {
-            let passingData = (self.tourAudio.object(at: i) as AnyObject).value(forKey: "audio") as! String
-
-//            print(passingData)
-            let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
-//            print(nsd)
-            
-            
-            
-            self.audioDataString = String(format: "%@", passingData as! CVarArg)
-            
-            self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
-            
-            print(self.audioData)
-            print("DONE HERE")
-            
-            self.dataArray.insert(self.audioData, at: 0)
-            
-//            print(dataArray)
-            
-//            print("THAT", self.audioData ?? String())
-        }
-        
-        print(self.dataArray)
+//        for i in 0 ..< count {
+//            let passingData = (self.tourAudio.object(at: i) as AnyObject).value(forKey: "audio") as! String
+//
+////            print(passingData)
+//            let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
+////            print(nsd)
+//            
+//            
+//            
+//            self.audioDataString = String(format: "%@", passingData as! CVarArg)
+//            
+//            self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
+//            
+//            print(self.audioData)
+//            print("DONE HERE")
+//            
+//            self.dataArray.insert(self.audioData, at: 0)
+//            
+////            print(dataArray)
+//            
+////            print("THAT", self.audioData ?? String())
+//        }
+//        
+//        print(self.dataArray)
 
     }
     
-//    @IBAction func playAudio(sender: AnyObject) {
-//
-//    }
-//    
+
+
+    @IBAction func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.up:
+
+                if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
+                    let imagePicker = UIImagePickerController()
+                    imagePicker.delegate = self
+                    imagePicker.sourceType = UIImagePickerControllerSourceType.camera
+                    imagePicker.allowsEditing = false
+                    self.present(imagePicker, animated: true, completion: nil)
+                }
+                
+            default:
+                break
+            }
+        }
+    }
+    
     @IBAction func endTourButton(sender: UIButton){
         
 //        let newView = ReviewView(frame: CGRect(x: 0, y: 0, width: 250, height: 100))
@@ -155,7 +186,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         let userId = user?.uid ?? String()
         let reviewDate = NSDate().timeIntervalSince1970 * 1000
 
-        print(commentText, rating, userId, reviewDate)
+//        print(commentText, rating, userId, reviewDate)
         
         self.ref.child("tours").child(tourId as! String).child("reviews").child(userId).setValue(["rating": rating, "comment": commentText, "datePosted": reviewDate])
         
@@ -168,13 +199,36 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     }
     
     @IBAction func pointSelect(sender: UIButton!){
-        self.audioProgress = 0.0
-        self.buttonInt = Int((sender.titleLabel?.text)!)!-1
-        print(self.buttonInt ?? Int())
-        self.playPauseButton.setTitle("Play", for: .normal)
         
-        let titleLabel = (tourAudio.object(at: buttonInt+1) as AnyObject).value(forKey: "title")
-        self.playingLabel.text = "\(self.buttonInt!). \(titleLabel as! String)"
+        if self.buttonInt == Int((sender.titleLabel?.text)!) {
+            
+            if self.pointDetails.isDescendant(of: self.tourMap) {
+                
+                self.pointDetails.removeFromSuperview()
+            } else {
+                
+                self.pointDetails = pointDetailView(frame: CGRect(x: sender.center.x - 20, y: sender.center.y + 20, width: 175, height: 60))
+                self.pointDetails.detailText.text = (tourPoints.object(at: buttonInt-1) as AnyObject).value(forKey: "detail") as! String
+                self.tourMap.addSubview(self.pointDetails)
+                self.tourMap.bringSubview(toFront: self.pointDetails)
+            }
+        
+        } else {
+
+            self.pointDetails.removeFromSuperview()
+            self.audioProgress = 0.0
+            self.buttonInt = Int((sender.titleLabel?.text)!)!
+            self.playPauseButton.setTitle("Play", for: .normal)
+            
+            let titleLabel = (tourPoints.object(at: buttonInt-1) as AnyObject).value(forKey: "title")
+            self.playingLabel.text = "\(self.buttonInt!). \(titleLabel as! String)"
+            
+            
+            self.pointDetails = pointDetailView(frame: CGRect(x: sender.center.x - 20, y: sender.center.y + 20, width: 175, height: 60))
+            self.pointDetails.detailText.text = (tourPoints.object(at: buttonInt-1) as AnyObject).value(forKey: "detail") as! String
+            self.tourMap.addSubview(self.pointDetails)
+            self.tourMap.bringSubview(toFront: self.pointDetails)
+        }
         
         //        print((self.tourAudio.object(at: buttonInt!) as AnyObject).value(forKey: "audio") ?? String())
 //        let passingData:Any = (self.tourAudio.object(at: buttonInt!) as AnyObject).value(forKey: "audio") ?? String()
@@ -193,7 +247,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     }
     
     @IBAction func sliderValueChange(sender: UISlider){
-        print(self.audioSlider.value)
+//        print(self.audioSlider.value)
         self.audioProgress = self.audioSlider.value
         self.audioPlayer?.currentTime = TimeInterval(self.audioProgress)
     }
@@ -201,9 +255,11 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     @IBAction func playAudio(sender: UIButton!) {
 
         if sender.titleLabel?.text == "Play" {
+            let device = UIDevice.current
+            device.isProximityMonitoringEnabled = true
         self.playPauseButton.setTitle("Pause", for: .normal)
-        print(self.dataArray.object(at: self.buttonInt!))
-        self.audioData = self.dataArray.object(at: self.buttonInt!) as! NSData
+//        print(self.dataArray.object(at: self.buttonInt!-1))
+        self.audioData = self.dataArray.object(at: self.buttonInt!-1) as! NSData
         self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
         self.audioPlayer?.prepareToPlay()
         self.audioPlayer?.currentTime = TimeInterval(self.audioProgress)
@@ -212,16 +268,21 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
         
         self.audioPlayer?.play()
-        print("DURAT",audioPlayer?.duration ?? String())
-        print("CURTM",audioPlayer?.currentTime ?? String())
+//        print("DURAT",audioPlayer?.duration ?? String())
+//        print("CURTM",audioPlayer?.currentTime ?? String())
         } else {
             self.playPauseButton.setTitle("Play", for: .normal)
             self.audioPlayer?.pause()
+            let device = UIDevice.current
+            device.isProximityMonitoringEnabled = false
             
         }
     }
     
     func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+        print("DONEEEEE")
+        let device = UIDevice.current
+        device.isProximityMonitoringEnabled = false
         self.audioPlayer?.currentTime = 0
         self.playPauseButton.setTitle("Play", for: .normal)
     }

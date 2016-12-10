@@ -26,8 +26,12 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var refHandle: UInt!
     var tourArray: NSMutableArray = []
     var nextArray: NSArray = []
-    var passingDict = [NSDictionary]()
+    var passingDict = [NSMutableDictionary]()
     var tourId: NSString!
+    let some:NSMutableArray = []
+    var sortingDict: NSDictionary!
+    
+    var titleName = String()
 
     @IBOutlet var tableView: UITableView!
 
@@ -63,13 +67,18 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //            
 //        })
         
+        
         registeredUserRef.observe(.value, with: { snapshot in
+            
+            self.sortingDict = snapshot.value as! NSDictionary
+            
+            print("SORTDD",self.sortingDict)
             
             for item in snapshot.children {
                 let child = item as! FIRDataSnapshot
                 let dict = child.value as! NSDictionary
                 let newDict: NSMutableDictionary = NSMutableDictionary()
-//                print(child.key)
+                
                 newDict.setValue(child.key, forKey: "tourId")
                 newDict.setValue(dict.value(forKey: "country") ?? NSString(), forKey: "country")
                 newDict.setValue(dict.value(forKey: "attraction") ?? NSString(), forKey: "attraction")
@@ -78,7 +87,10 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 newDict.setValue(dict.value(forKey: "downloads" ?? String()), forKey: "downloads")
 
                 self.passingDict.append(newDict)
+//                some.insert(["Country": dict.value(forKey: "country"), "Attraction": dict.value(forKey: "attraction")])
+                self.some.insert(newDict, at: 0)
             }
+            print("SOME",self.some)
             
             print(self.passingDict.count)
             print(self.passingDict)
@@ -122,14 +134,32 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         [self.performSegue(withIdentifier: "showTourDetails", sender: self)]
     }
 
+
     @IBAction func sortResults(sender: UIButton) {
+
+//        let ordered = (self.sortingDict.allValues as! [String]).sorted(by: >)
+        
+//        var newDict: Array = Array()
+        
+        var newDict = self.sortingDict.allValues as Array
+    
+        
+        let arrayOfIntsAsStrings = ["103", "2", "1", "50", "55", "98"]
 //        
-//        let dict = 
-//        print(dict)
-//        
-//        let sorted = sorted(self.passingDict as Dictionary, {$0 < $1})
-//        print(sorted)
-        print(self.passingDict[0].value(forKey: "title")!)
+//        let result = newDict.sorted()
+        
+        print(newDict)
+//        let dToS = newDict.value(forKey: "title")
+        
+//        let againArr = dToS.sorted(by: { (s1: String, s2: String) -> Bool in
+//            return s1 > s2
+//        })
+
+        
+//        print("CBB", self.sortingDict.allValues.sort("title"))
+        
+//        print(ordered)
+        
     }
     
     // MARK: - Navigation
