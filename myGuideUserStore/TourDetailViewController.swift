@@ -16,8 +16,6 @@ class TourDetailViewController: UIViewController {
     
     let ref = FIRDatabase.database().reference()
     var tourId: NSString!
-    
-    var downloadCount = NSNumber()
 
     @IBOutlet var tableView: UITableView!
 
@@ -25,12 +23,14 @@ class TourDetailViewController: UIViewController {
     
     var namesArray: NSDictionary!
     
+    var downloadCount: Int!
+    
     @IBOutlet var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
 
         print("HERES THE NAME", self.tourId)
-        print("DOWNLOADS!!!", self.downloadCount)
+
         
         
         let registeredUserRef = ref.child("tours").child(self.tourId as String)
@@ -44,6 +44,12 @@ class TourDetailViewController: UIViewController {
                 print(self.namesArray.value(forKey: "keyWords") ?? String())
             })
 
+        ref.child("tours").child(self.tourId as String).child("downloads").observe(.value, with: {snap in
+            let snapValue = snap.value
+            self.downloadCount = (snapValue as AnyObject).integerValue
+            print(self.downloadCount!)
+            
+        })
         
         
 
@@ -62,6 +68,7 @@ class TourDetailViewController: UIViewController {
         let tour = NSManagedObject(entity: entity!, insertInto: context)
         
         let audioRef = ref.child("audio").child(self.tourId as String)
+        
         
         audioRef.observe(.value, with: { snapshot in
 
@@ -91,9 +98,9 @@ class TourDetailViewController: UIViewController {
             }
 
         })
-        
-//        ref.child("tours").child(self.)
-        
+        self.downloadCount = self.downloadCount! + 1
+        print(self.downloadCount!)
+        self.ref.child("tours").child(self.tourId as String).child("downloads").setValue("\(self.downloadCount!)")
 
     }
 

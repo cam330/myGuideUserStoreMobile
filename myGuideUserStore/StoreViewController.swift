@@ -17,7 +17,6 @@ class TourTableViewCell: UITableViewCell {
     @IBOutlet var tourKeyWordsLabel: UILabel!
     @IBOutlet var tourGuideNameLabel: UILabel!
     var tourId: NSString!
-    var downloadCount: NSNumber!
 }
 
 class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -29,7 +28,6 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var nextArray: NSArray = []
     var passingDict = [NSDictionary]()
     var tourId: NSString!
-    var downloadCount: NSNumber!
 
     @IBOutlet var tableView: UITableView!
 
@@ -77,6 +75,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 newDict.setValue(dict.value(forKey: "attraction") ?? NSString(), forKey: "attraction")
                 newDict.setValue(dict.value(forKey: "title") ?? NSString(), forKey: "title")
                 newDict.setValue(dict.value(forKey: "keyWords") ?? NSString(), forKey: "keys")
+                newDict.setValue(dict.value(forKey: "downloads" ?? String()), forKey: "downloads")
 
                 self.passingDict.append(newDict)
             }
@@ -107,7 +106,6 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let stringToPresent = (self.passingDict[indexPath.row].value(forKey: "keys") as! NSArray).componentsJoined(by: ", ")
             print(stringToPresent)
             cell.tourKeyWordsLabel.text = "\(stringToPresent)"
-            cell.downloadCount = (self.passingDict[indexPath.row].value(forKey: "downloads")) as! NSNumber!
             print(cell.tourId)
         }
         return cell
@@ -120,11 +118,19 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         print(cell.tourId)
         
         self.tourId = cell.tourId
-        self.downloadCount = cell.downloadCount
         
         [self.performSegue(withIdentifier: "showTourDetails", sender: self)]
     }
 
+    @IBAction func sortResults(sender: UIButton) {
+//        
+//        let dict = 
+//        print(dict)
+//        
+//        let sorted = sorted(self.passingDict as Dictionary, {$0 < $1})
+//        print(sorted)
+        print(self.passingDict[0].value(forKey: "title")!)
+    }
     
     // MARK: - Navigation
 
@@ -134,7 +140,6 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let nextScene = segue.destination as? TourDetailViewController
             
             nextScene?.tourId = self.tourId
-            nextScene?.downloadCount = self.downloadCount
             
 
         }
