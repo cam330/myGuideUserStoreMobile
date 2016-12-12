@@ -98,6 +98,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
         let cell = tableView.cellForRow(at: indexPath)as! MyTourCell
         
         self.tourToPass = toursArray.object(at: indexPath.row);
+        self.tourId = cell.tourId
         
         [self.performSegue(withIdentifier: "showTourSegue", sender: self)]
     }
@@ -137,6 +138,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
             let tourPage = segue.destination as? TourViewController
             
             tourPage?.theTour = self.tourToPass
+            tourPage?.tourId = self.tourId
             
             
         }

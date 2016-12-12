@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import FirebaseAuth
+import Cosmos
 
 final class TourObj: NSObject {
     
@@ -24,6 +25,7 @@ class TourTableViewCell: UITableViewCell {
     
     @IBOutlet var titleLabel: UILabel!
     
+    @IBOutlet var starView: CosmosView!
     @IBOutlet var tourKeyWordsLabel: UILabel!
     @IBOutlet var tourGuideNameLabel: UILabel!
     var tourId: NSString!
@@ -46,6 +48,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var titleName = String()
     let tourObjectArray: NSMutableArray = []
     var sortPicker: sortingView = sortingView()
+    
+    var alert = UIAlertController()
     
     var countryToSelect: NSString!
     
@@ -80,8 +84,10 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.title = self.countryToSelect as String?
+        
         let registeredUserRef = ref.child("tours")
-
+        
         
         
         //Use this to get back all values from china
@@ -118,11 +124,15 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             print("SORTDD",self.sortingDict)
             
             
+            
+            
             for item in snapshot.children {
                 let child = item as! FIRDataSnapshot
                 let dict = child.value as! NSDictionary
                 let newDict: NSMutableDictionary = NSMutableDictionary()
                 
+                if (dict.value(forKey: "country") as! String).isEqual(self.countryToSelect) || self.countryToSelect == "All Locations" {
+                    
                 newDict.setValue(child.key, forKey: "tourId")
                 newDict.setValue(dict.value(forKey: "country") ?? NSString(), forKey: "country")
                 newDict.setValue(dict.value(forKey: "attraction") ?? NSString(), forKey: "attraction")
@@ -130,7 +140,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 newDict.setValue(dict.value(forKey: "keyWords") ?? NSString(), forKey: "keys")
 //                newDict.setValue(dict.value(forKey: "downloads" ?? NSString(), forKey: "downloads")
                 newDict.setValue(dict.value(forKey: "price") ?? NSString(), forKey: "price")
-                
+                newDict.setValue(dict.value(forKey: "reviews"), forKey: "reviews")
+                    
                 let obTitle = dict.value(forKey: "title") ?? String()
 //                var obCountry = dict.value(forKey: "country") ?? String()
                 let obTourId = child.key
@@ -141,32 +152,53 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 self.tourObjectArray.addObjects(from: tours)
                 
-                print("OBJ TEST", self.tourObjectArray)
+//                print("OBJ TEST", self.tourObjectArray)
                 let objee:NSObject = newDict
 //                print("TEts",objee)
                 
                 self.passingDict = newDict
 //                some.insert(["Country": dict.value(forKey: "country"), "Attraction": dict.value(forKey: "attraction")])
                 self.some.insert(newDict, at: 0)
+                    
+                }
+                
             }
 //            print("SOME",self.some)
             self.presentingArray = self.some as NSArray
             
-            print(self.passingDict.count)
-            print(self.passingDict)
+//            print(self.passingDict.count)
+//            print(self.passingDict)
             self.tableView.reloadData()
+            self.alert.dismiss(animated: true, completion: nil)
             
+                
         })
+ 
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-//        print("CUSH",self.countryToSelect)
-        
-        let registeredUserRef = ref.child("tours").child()
-        print(registeredUserRef)
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//    
+//        self.alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+//        self.alert.view.tintColor = UIColor.black
+//        let loadingIndicator: UIActivityIndicatorView = UIActivityIndicatorView(frame: CGRect(x:10, y:5, width:50, height:50)) as UIActivityIndicatorView
+//        loadingIndicator.hidesWhenStopped = true
+//        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+//        loadingIndicator.startAnimating()
+//        
+//        alert.view.addSubview(loadingIndicator)
+//        present(alert, animated: true, completion:nil)
+//    
+//    }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+////        print("CUSH",self.countryToSelect)
+//        
+//        let registeredUserRef = ref.child("tours").child()
+//        print(registeredUserRef)
+//    }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -198,6 +230,9 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "storeCell", for: indexPath)as! TourTableViewCell
         
+        cell.starView.settings.fillMode = .precise
+        
+        cell.starView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0);
         
         if self.presentingArray.count > 0 {
             cell.tourId = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "tourId") as! NSString
@@ -206,8 +241,16 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let stringToPresent = ((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "keys") as! NSArray).componentsJoined(by: ", ")
             print(stringToPresent)
             cell.tourKeyWordsLabel.text = "\(stringToPresent)"
-            cell.priceLabel.text = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "price") as! String
+            if (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "price") as! String == "Free" {
+                cell.priceLabel.text = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "price") as! String
+            } else {
+            cell.priceLabel.text = "$\((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "price") as! String)"
+            }
             print(cell.tourId)
+            let total = ((((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews") ?? String()) as AnyObject).value(forKey: "total")) as! Int
+            let count = ((((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews") ?? String()) as AnyObject).value(forKey: "count")) as! Int
+//            print((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews")[1])
+            cell.starView.rating = Double(total/count)
         }
         return cell
     }
@@ -217,6 +260,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         let cell = tableView.cellForRow(at: indexPath)as! TourTableViewCell
         
         print(cell.tourId)
+        
+        tableView.deselectRow(at: indexPath, animated: true)
         
         self.tourId = cell.tourId
         

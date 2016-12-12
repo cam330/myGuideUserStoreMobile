@@ -10,7 +10,7 @@ import UIKit
 
 class ChooseCountryTableViewController: UITableViewController {
     
-    let countryArray = ["Spain", "France", "Germany", "United States", "Russia", "China", "Mexico", "United Kingdom", "Turkey", "Italy"]
+    let countryArray = ["All Locations","Spain", "France", "Germany", "United States", "Russia", "China", "Mexico", "United Kingdom", "Turkey", "Italy"]
     
     var countrySelected = String()
 

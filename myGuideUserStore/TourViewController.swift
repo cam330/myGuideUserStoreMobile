@@ -15,6 +15,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     
     var ref: FIRDatabaseReference!
     
+    @IBOutlet var remainingTimeLabel: UILabel!
     @IBOutlet var audioSlider: UISlider!
     @IBOutlet var playPauseButton: UIButton!
     @IBOutlet var tourMap: UIImageView!
@@ -38,10 +39,15 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     
     var pointDetails:pointDetailView = pointDetailView()
     
+    var total = Int()
+    var count = Int()
+    var tourId = String()
+    
+    
     @IBOutlet var playingLabel: UILabel!
     
     var audioProgress: Float!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -55,6 +61,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         
         
 //        print("DATOUR",theTour)
+        
+        print("TIDTIE",self.tourId)
         
         self.reviewView.cancelButton.addTarget(self, action: #selector(submitReview), for: UIControlEvents.touchUpInside)
         
@@ -152,6 +160,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
             }
         }
     }
+
+
     
     @IBAction func endTourButton(sender: UIButton){
         
@@ -172,6 +182,18 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         self.tourMap.addSubview(self.reviewView)
         self.tourMap.bringSubview(toFront: self.reviewView)
         
+        self.ref.child("tours").child(tourId as! String).child("reviews").observe(.value, with: { snapshot in
+            print("SNVAL", snapshot.value)
+            
+            self.total = (snapshot.value as AnyObject).value(forKey: "total") as! Int
+            self.count = (snapshot.value as AnyObject).value(forKey: "count") as! Int
+            
+            print("Total\(self.total) COUNT\(self.count)")
+            
+            
+            
+        })
+        
 //        reviewView.delegate = self
     }
     
@@ -187,8 +209,12 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         let reviewDate = NSDate().timeIntervalSince1970 * 1000
 
 //        print(commentText, rating, userId, reviewDate)
+        let reviewId = "\(userId)\(Int(reviewDate))"
+        print(reviewId)
         
-        self.ref.child("tours").child(tourId as! String).child("reviews").child(userId).setValue(["rating": rating, "comment": commentText, "datePosted": reviewDate])
+        self.ref.child("reviews").child(tourId as! String).child(reviewId).setValue(["user": userId, "rating": rating, "comment": commentText, "datePosted": reviewDate])
+        
+        self.ref.child("tours").child(tourId as! String).child("reviews").setValue(["total": Int(rating)+self.total, "count": 1+self.count])
         
         navigationController?.popViewController(animated: true)
     }
@@ -199,6 +225,14 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     }
     
     @IBAction func pointSelect(sender: UIButton!){
+        
+        for subview in self.tourMap.subviews{
+            subview.backgroundColor = UIColor.green
+            sender.backgroundColor = UIColor.red
+        }
+        
+        
+
         
         if self.buttonInt == Int((sender.titleLabel?.text)!) {
             
@@ -223,12 +257,18 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
             let titleLabel = (tourPoints.object(at: buttonInt-1) as AnyObject).value(forKey: "title")
             self.playingLabel.text = "\(self.buttonInt!). \(titleLabel as! String)"
             
+            self.audioData = self.dataArray.object(at: self.buttonInt!-1) as! NSData
+            self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+            
+            self.remainingTimeLabel.text = stringFromTimeInterval(interval: (self.audioPlayer?.duration)!) as String
+            print(self.remainingTimeLabel.text)
             
             self.pointDetails = pointDetailView(frame: CGRect(x: sender.center.x - 20, y: sender.center.y + 20, width: 175, height: 60))
             self.pointDetails.detailText.text = (tourPoints.object(at: buttonInt-1) as AnyObject).value(forKey: "detail") as! String
             self.tourMap.addSubview(self.pointDetails)
             self.tourMap.bringSubview(toFront: self.pointDetails)
         }
+        
         
         //        print((self.tourAudio.object(at: buttonInt!) as AnyObject).value(forKey: "audio") ?? String())
 //        let passingData:Any = (self.tourAudio.object(at: buttonInt!) as AnyObject).value(forKey: "audio") ?? String()
@@ -240,6 +280,16 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
 //        print(self.audioDataArray)
         
 
+    }
+    
+    func stringFromTimeInterval(interval: TimeInterval) -> NSString {
+        
+        let ti = NSInteger(interval)
+        
+        let seconds = ti % 60
+        let minutes = (ti / 60) % 60
+        
+        return NSString(format: "%0.2d:%0.2d",minutes,seconds)
     }
     
     func updateTime(_ timer: Timer) {
@@ -259,8 +309,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
             device.isProximityMonitoringEnabled = true
         self.playPauseButton.setTitle("Pause", for: .normal)
 //        print(self.dataArray.object(at: self.buttonInt!-1))
-        self.audioData = self.dataArray.object(at: self.buttonInt!-1) as! NSData
-        self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+//        self.audioData = self.dataArray.object(at: self.buttonInt!-1) as! NSData
+//        self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
         self.audioPlayer?.prepareToPlay()
         self.audioPlayer?.currentTime = TimeInterval(self.audioProgress)
         self.audioSlider.maximumValue = Float((self.audioPlayer?.duration)!)

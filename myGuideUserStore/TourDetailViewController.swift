@@ -77,11 +77,11 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
         let tour = NSManagedObject(entity: entity!, insertInto: context)
         
-        let audioRef = ref.child("audio").child(self.tourId as String)
+        var audioRef = ref.child("audio").child(self.tourId as String)
+
         
         
         audioRef.observe(.value, with: { snapshot in
-
             
             let dict = snapshot.value as! NSDictionary
             var points = dict.value(forKey: "points") ?? NSDictionary()
@@ -115,6 +115,7 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
 
             }
             
+
             
 //            print("DATA", self.dataArray)
 
