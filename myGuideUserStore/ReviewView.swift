@@ -42,6 +42,10 @@ class ReviewView: UIView {
     func initializeSubview() {
         let xibFileName = "endRatingView"
         let view = Bundle.main.loadNibNamed(xibFileName, owner: self, options:nil)?[0] as! UIView
+        
+        self.submitButton.layer.cornerRadius = 15
+        self.layer.borderColor = UIColor.black.cgColor
+        
         self.addSubview(view)
         view.frame = self.bounds
     }

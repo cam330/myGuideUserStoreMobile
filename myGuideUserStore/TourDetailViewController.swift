@@ -11,7 +11,7 @@ import Firebase
 import FirebaseAuth
 import CoreData
 
-class TourDetailViewController: UIViewController {
+class TourDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
     let ref = FIRDatabase.database().reference()
@@ -171,26 +171,26 @@ class TourDetailViewController: UIViewController {
 //    }
     
     
-    // MARK: - Table view data source
+//     MARK: - Table view data source 
     
-//     func numberOfSections(in tableView: UITableView) -> Int {
-//        // #warning Incomplete implementation, return the number of sections
-//        return 1
-//    }
-//    
-//     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        // #warning Incomplete implementation, return the number of rows
-//        return 4
-//    }
+     func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 1
+    }
+    
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        return 4
+    }
     
     
-//     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "tourDetailCells", for: indexPath)
-//        
-//        
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "tourDetailCell", for: indexPath)
+        
+        
 //        cell.textLabel?.text = String(format: "%d", indexPath.row+3)
-//        return cell
-//    }
+        return cell
+    }
 
 
     /*
