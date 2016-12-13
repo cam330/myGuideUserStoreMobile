@@ -30,11 +30,13 @@ class TourTableViewCell: UITableViewCell {
     @IBOutlet var tourGuideNameLabel: UILabel!
     var tourId: NSString!
     @IBOutlet var priceLabel: UILabel!
+    @IBOutlet var likeButton: UIButton!
 }
 
 class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDataSource, UIPickerViewDelegate {
     
 //    var ref: FIRDatabaseReference!
+
     let ref = FIRDatabase.database().reference()
     var refHandle: UInt!
     var tourArray: NSMutableArray = []
@@ -44,10 +46,11 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var some:NSMutableArray = []
     var presentingArray: NSArray = []
     var sortingDict: NSDictionary!
-    @IBOutlet var likeButton: UIButton!
     var titleName = String()
     let tourObjectArray: NSMutableArray = []
     var sortPicker: sortingView = sortingView()
+    
+    var likeArray: NSMutableArray = []
     
     var alert = UIAlertController()
     
@@ -141,6 +144,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //                newDict.setValue(dict.value(forKey: "downloads" ?? NSString(), forKey: "downloads")
                 newDict.setValue(dict.value(forKey: "price") ?? NSString(), forKey: "price")
                 newDict.setValue(dict.value(forKey: "reviews"), forKey: "reviews")
+                newDict.setValue(false, forKey: "liked")
                     
                 let obTitle = dict.value(forKey: "title") ?? String()
 //                var obCountry = dict.value(forKey: "country") ?? String()
@@ -200,6 +204,35 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //        print(registeredUserRef)
 //    }
     
+    @IBAction func likeButtonPress (sender: UIButton) {
+        
+        var indexPath: NSIndexPath!
+        
+        if let button = sender as? UIButton {
+            if let superview = button.superview {
+                if let cell = superview.superview?.superview as? TourTableViewCell {
+                    indexPath = self.tableView.indexPath(for: cell) as NSIndexPath!
+                    if (self.some[indexPath.row] as AnyObject).value(forKey: "liked") as! Bool == false{
+                        (self.some[indexPath.row]as AnyObject).setValue(true, forKey: "liked")
+//                        sender.setImage(#imageLiteral(resourceName: "heart-full"), for: .normal)
+                    } else {
+                        (self.some[indexPath.row]as AnyObject).setValue(false, forKey: "liked")
+//                        sender.setImage(#imageLiteral(resourceName: "heart-empty"), for: .normal)
+                    }
+                }
+            }
+        }
+        
+        print("NUMNUJ", self.some)
+        tableView.reloadData()
+  
+        
+//        sender.setImage(#imageLiteral(resourceName: "heart-full"), for: .normal)
+        
+//        let path = [NSIndexPath indexPathForRow:senderButton.tag inSection:0]
+        print(sender)
+    }
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -251,6 +284,12 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let count = ((((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews") ?? String()) as AnyObject).value(forKey: "count")) as! Int
 //            print((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews")[1])
             cell.starView.rating = Double(total/count)
+            
+            if (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "liked") as! Bool == false {
+                cell.likeButton.setImage(#imageLiteral(resourceName: "heart-empty"), for: .normal)
+            } else {
+                cell.likeButton.setImage(#imageLiteral(resourceName: "heart-full"), for: .normal)
+            }
         }
         return cell
     }

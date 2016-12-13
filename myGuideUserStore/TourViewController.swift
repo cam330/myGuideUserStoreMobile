@@ -11,10 +11,11 @@ import Firebase
 import AVFoundation
 import FirebaseAuth
 
-class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVAudioPlayerDelegate{
     
     var ref: FIRDatabaseReference!
     
+    @IBOutlet var audioView: UIView!
     @IBOutlet var remainingTimeLabel: UILabel!
     @IBOutlet var audioSlider: UISlider!
     @IBOutlet var playPauseButton: UIButton!
@@ -51,7 +52,12 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.audioSlider.setThumbImage(self.generateHandleImage(with: .white), for: .normal)
+        
+        self.audioView.isHidden = true
+        
         try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+        try? AVAudioSession.sharedInstance().setActive(true)
         
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(gesture:)))
         swipeUp.direction = UISwipeGestureRecognizerDirection.up
@@ -161,9 +167,21 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         }
     }
 
+    private func generateHandleImage(with color: UIColor) -> UIImage {
+        let rect = CGRect(x: 0, y: 0, width: 20, height: 20)
+        
+        return UIGraphicsImageRenderer(size: rect.size).image { (imageContext) in
+            imageContext.cgContext.setFillColor(UIColor.lightGray.cgColor)
+            imageContext.cgContext.fill(rect.insetBy(dx: 10, dy: 10))
+        }
+    }
 
     
     @IBAction func endTourButton(sender: UIButton){
+        self.audioView.isHidden = true
+        navigationController?.navigationBar.isUserInteractionEnabled=false
+        navigationController?.navigationBar.tintColor = UIColor.lightGray
+        
         
 //        let newView = ReviewView(frame: CGRect(x: 0, y: 0, width: 250, height: 100))
 ////        myView.backgroundColor = UIColor.blue
@@ -198,6 +216,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     }
     
     @IBAction func submitReview(sender: UIButton!) {
+        navigationController?.navigationBar.isUserInteractionEnabled=true
+        navigationController?.navigationBar.tintColor = self.view.tintColor
         
         let user = FIRAuth.auth()?.currentUser
         
@@ -222,9 +242,14 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     @IBAction func cancelReview(sender: UIButton!) {
         self.reviewView.removeFromSuperview()
         self.blurEffectView.removeFromSuperview()
+        self.audioView.isHidden = false
+        navigationController?.navigationBar.isUserInteractionEnabled=true
+        navigationController?.navigationBar.tintColor = self.view.tintColor
     }
     
     @IBAction func pointSelect(sender: UIButton!){
+        
+        self.audioView.isHidden = false
         
         for subview in self.tourMap.subviews{
             subview.backgroundColor = UIColor.green
@@ -294,11 +319,17 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     
     func updateTime(_ timer: Timer) {
         self.audioSlider.value = Float((self.audioPlayer?.currentTime)!)
+        
+        let currentTime = Double((self.audioPlayer?.currentTime)!)
+        let duration = Double((self.audioPlayer?.duration)!)
+        
+        self.remainingTimeLabel.text = stringFromTimeInterval(interval:(TimeInterval(Int(duration) - Int(currentTime)))) as String
     }
     
     @IBAction func sliderValueChange(sender: UISlider){
 //        print(self.audioSlider.value)
         self.audioProgress = self.audioSlider.value
+        self.audioSlider.setValue(self.audioProgress, animated: true)
         self.audioPlayer?.currentTime = TimeInterval(self.audioProgress)
     }
     
@@ -311,6 +342,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
 //        print(self.dataArray.object(at: self.buttonInt!-1))
 //        self.audioData = self.dataArray.object(at: self.buttonInt!-1) as! NSData
 //        self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+        self.audioSlider.value = self.audioProgress
+        self.audioPlayer?.delegate = self
         self.audioPlayer?.prepareToPlay()
         self.audioPlayer?.currentTime = TimeInterval(self.audioProgress)
         self.audioSlider.maximumValue = Float((self.audioPlayer?.duration)!)
@@ -322,6 +355,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
 //        print("CURTM",audioPlayer?.currentTime ?? String())
         } else {
             self.playPauseButton.setTitle("Play", for: .normal)
+            self.audioProgress = Float((self.audioPlayer?.currentTime)!)
             self.audioPlayer?.pause()
             let device = UIDevice.current
             device.isProximityMonitoringEnabled = false
@@ -329,12 +363,13 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         }
     }
     
-    func audioPlayerDidFinishPlaying(player: AVAudioPlayer, successfully flag: Bool) {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         print("DONEEEEE")
         let device = UIDevice.current
         device.isProximityMonitoringEnabled = false
-        self.audioPlayer?.currentTime = 0
+        player.currentTime = 0
         self.playPauseButton.setTitle("Play", for: .normal)
+        player.stop()
     }
     
     // CAMERA

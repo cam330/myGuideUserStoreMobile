@@ -71,89 +71,133 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @IBAction func downloadTour(_ sender: Any) {
-
-        let context = getContext()
-        let entity = NSEntityDescription.entity(forEntityName: "Tour", in: context)
         
-        let tour = NSManagedObject(entity: entity!, insertInto: context)
+        let user = FIRAuth.auth()?.currentUser
+        let email = user?.email
         
-        var audioRef = ref.child("audio").child(self.tourId as String)
-
+    
+        let alert = UIAlertController(title: "Purchase Tour?", message: "Enter your password to purchase tour", preferredStyle: .alert)
         
+        alert.addTextField { (textField) in
+            textField.isSecureTextEntry = true
+            textField.placeholder = "Password"
+            
+        }
         
-        audioRef.observe(.value, with: { snapshot in
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+//            print("Text field: \(textField?.text)")
+            print(email! as String)
+                FIRAuth.auth()?.signIn(withEmail: email! as String, password: (textField?.text!)!) { (user, error) in
+                    if error == nil {
+                        print("WORKS")
             
-            let dict = snapshot.value as! NSDictionary
-            var points = dict.value(forKey: "points") ?? NSDictionary()
-            
-//            print("POINTS TO WRAP", (points as AnyObject).count)
-            
-            
-            for i in 0 ..< (points as AnyObject).count {
-                let passingData = ((points as AnyObject).object(at: i) as AnyObject).value(forKey: "audio") as! String
-                
-                //            print(passingData)
-                let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
-                //            print(nsd)
-                
-                
-                
-                self.audioDataString = String(format: "%@", passingData as CVarArg)
-                
-                self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
-                
-//                print(self.audioData)
-                print("DONE HERE")
-                
-                self.dataArray.insert(self.audioData, at: i)
-                
-                //            print(dataArray)
-                
-                //            print("THAT", self.audioData ?? String())
-                
-//                self.audioArray.insert(self.audioData, at: i)
+                        let context = self.getContext()
+                        let entity = NSEntityDescription.entity(forEntityName: "Tour", in: context)
+                        
+                        let tour = NSManagedObject(entity: entity!, insertInto: context)
+                        
+                        let audioRef = self.ref.child("audio").child(self.tourId as String)
+                        
+                        
+                        
+                        let formatted = DateFormatter()
+                        
+                        formatted.dateStyle = .short
+                        
+                        let time = NSDate().timeIntervalSince1970 + 604800
+                        
+                        let date = NSDate(timeIntervalSince1970: time)
+                        let formattedDate = formatted.string(from:date as Date)
+                        
+                        
+                        
+                        audioRef.observe(.value, with: { snapshot in
+                            
+                            let dict = snapshot.value as! NSDictionary
+                            var points = dict.value(forKey: "points") ?? NSDictionary()
+                            
+                            //            print("POINTS TO WRAP", (points as AnyObject).count)
+                            
+                            
+                            for i in 0 ..< (points as AnyObject).count {
+                                let passingData = ((points as AnyObject).object(at: i) as AnyObject).value(forKey: "audio") as! String
+                                
+                                //            print(passingData)
+                                let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
+                                //            print(nsd)
+                                
+                                
+                                
+                                self.audioDataString = String(format: "%@", passingData as CVarArg)
+                                
+                                self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
+                                
+                                //                print(self.audioData)
+                                print("DONE HERE")
+                                
+                                self.dataArray.insert(self.audioData, at: i)
+                                
+                                //            print(dataArray)
+                                
+                                //            print("THAT", self.audioData ?? String())
+                                
+                                //                self.audioArray.insert(self.audioData, at: i)
+                                
+                            }
+                            
+                            
+                            
+                            //            print("DATA", self.dataArray)
+                            
+                            
+                            
+                            self.data = NSKeyedArchiver.archivedData(withRootObject: points) as NSData
+                            self.audioDataData = NSKeyedArchiver.archivedData(withRootObject: self.dataArray) as NSData
+                            
+                            print(self.audioDataData)
+                            
+                            tour.setValue(self.tourId, forKey: "tourId")
+                            tour.setValue(self.namesArray.value(forKey: "attraction") ?? String(), forKey: "tourAttraction")
+                            tour.setValue(self.namesArray.value(forKey: "country") ?? String(), forKey: "tourCountry")
+                            tour.setValue(self.namesArray.value(forKey: "title") ?? String(), forKey: "tourTitle")
+                            tour.setValue(self.data, forKey: "tourPoints")
+                            tour.setValue(self.audioDataData, forKey: "tourPointsAudio")
+                            tour.setValue(date, forKey: "expireDate")
+                            
+                            do{
+                                try context.save()
+                                print("Saved!")
+                                
+                                let viewControllers: [UIViewController] = self.navigationController!.viewControllers ;
+                                for aViewController in viewControllers {
+                                    if(aViewController is MyToursViewController){
+                                        self.navigationController!.popToViewController(aViewController, animated: true);
+                                    }
+                                }
+                            } catch let error as NSError {
+                                print("Could not save \(error),\(error.userInfo)")
+                            } catch {
+                                
+                            }
+                            
+                        })
+                        self.downloadCount = self.downloadCount! + 1
+                        print(self.downloadCount!)
+                        self.ref.child("tours").child(self.tourId as String).child("downloads").setValue("\(self.downloadCount!)")
 
-            }
-            
-
-            
-//            print("DATA", self.dataArray)
-
-            
-            
-            self.data = NSKeyedArchiver.archivedData(withRootObject: points) as NSData
-            self.audioDataData = NSKeyedArchiver.archivedData(withRootObject: self.dataArray) as NSData
-            
-            print(self.audioDataData)
-            
-            tour.setValue(self.tourId, forKey: "tourId")
-            tour.setValue(self.namesArray.value(forKey: "attraction") ?? String(), forKey: "tourAttraction")
-            tour.setValue(self.namesArray.value(forKey: "country") ?? String(), forKey: "tourCountry")
-            tour.setValue(self.namesArray.value(forKey: "title") ?? String(), forKey: "tourTitle")
-            tour.setValue(self.data, forKey: "tourPoints")
-            tour.setValue(self.audioDataData, forKey: "tourPointsAudio")
-            
-            do{
-                try context.save()
-                print("Saved!")
-                
-                let viewControllers: [UIViewController] = self.navigationController!.viewControllers ;
-                for aViewController in viewControllers {
-                    if(aViewController is MyToursViewController){
-                        self.navigationController!.popToViewController(aViewController, animated: true);
+                        
+                    } else {
+                        print(error)
                     }
                 }
-            } catch let error as NSError {
-                print("Could not save \(error),\(error.userInfo)")
-            } catch {
-                
-            }
-
-        })
-        self.downloadCount = self.downloadCount! + 1
-        print(self.downloadCount!)
-        self.ref.child("tours").child(self.tourId as String).child("downloads").setValue("\(self.downloadCount!)")
-
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { [weak alert] (_) in
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        
     }
 
     

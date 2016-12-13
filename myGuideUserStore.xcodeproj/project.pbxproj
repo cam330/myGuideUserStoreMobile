@@ -26,6 +26,7 @@
 		320A1F521DFF16A800117D7B /* pointsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320A1F511DFF16A800117D7B /* pointsListView.swift */; };
 		320A1F541DFF1E4E00117D7B /* pointViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 320A1F531DFF1E4E00117D7B /* pointViewCell.xib */; };
 		320A1F561DFF1F4000117D7B /* pointViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320A1F551DFF1F4000117D7B /* pointViewTableViewCell.swift */; };
+		320A1F581DFF7F6D00117D7B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320A1F571DFF7F6D00117D7B /* AVFoundation.framework */; };
 		320C6D1E1DF88CD200B60430 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 320C6D1D1DF88CD200B60430 /* CoreData.framework */; };
 		320C6D201DF8908800B60430 /* MyToursViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320C6D1F1DF8908800B60430 /* MyToursViewController.swift */; };
 		320C6D221DF8B92A00B60430 /* TourViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 320C6D211DF8B92A00B60430 /* TourViewController.swift */; };
@@ -88,6 +89,7 @@
 		320A1F511DFF16A800117D7B /* pointsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pointsListView.swift; sourceTree = "<group>"; };
 		320A1F531DFF1E4E00117D7B /* pointViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = pointViewCell.xib; sourceTree = "<group>"; };
 		320A1F551DFF1F4000117D7B /* pointViewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pointViewTableViewCell.swift; sourceTree = "<group>"; };
+		320A1F571DFF7F6D00117D7B /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		320C6D1D1DF88CD200B60430 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		320C6D1F1DF8908800B60430 /* MyToursViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyToursViewController.swift; sourceTree = "<group>"; };
 		320C6D211DF8B92A00B60430 /* TourViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TourViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				320A1F581DFF7F6D00117D7B /* AVFoundation.framework in Frameworks */,
 				320C6D1E1DF88CD200B60430 /* CoreData.framework in Frameworks */,
 				7B78F70EFF30A7CAA06146D3 /* Pods_myGuideUserStore.framework in Frameworks */,
 			);
@@ -216,6 +219,7 @@
 		4106B22C298A071714931533 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				320A1F571DFF7F6D00117D7B /* AVFoundation.framework */,
 				320C6D1D1DF88CD200B60430 /* CoreData.framework */,
 				4A508D9F738E34ABC7DFA3A0 /* Pods_myGuideUserStore.framework */,
 				C5C2A5894366EB52FFB4C483 /* Pods_myGuideUserStoreTests.framework */,
