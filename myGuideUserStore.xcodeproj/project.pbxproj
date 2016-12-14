@@ -35,6 +35,9 @@
 		323CB11D1DF71445006ED9A2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323CB11C1DF71445006ED9A2 /* ViewController.swift */; };
 		323CB11F1DF714D1006ED9A2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */; };
 		324E90DC1DF0EF3C00D24175 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 324E90DB1DF0EF3C00D24175 /* GoogleService-Info.plist */; };
+		32A26A931E01A7BD00FEC6E5 /* reviewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32A26A921E01A7BD00FEC6E5 /* reviewCell.xib */; };
+		32A26A951E01B72C00FEC6E5 /* reviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A26A941E01B72C00FEC6E5 /* reviewTableViewCell.swift */; };
+		32A26A971E01D3DB00FEC6E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A26A961E01D3DB00FEC6E5 /* StoreKit.framework */; };
 		32F5FB801DFC8215002521F5 /* pointDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */; };
 		32F5FB821DFC82E1002521F5 /* pointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F5FB811DFC82E1002521F5 /* pointDetailView.swift */; };
 		32FF8CE21DF7246C00A5CAA5 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FF8CE11DF7246C00A5CAA5 /* StoreViewController.swift */; };
@@ -98,6 +101,9 @@
 		323CB11C1DF71445006ED9A2 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		323CB11E1DF714D1006ED9A2 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		324E90DB1DF0EF3C00D24175 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		32A26A921E01A7BD00FEC6E5 /* reviewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = reviewCell.xib; sourceTree = "<group>"; };
+		32A26A941E01B72C00FEC6E5 /* reviewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = reviewTableViewCell.swift; sourceTree = "<group>"; };
+		32A26A961E01D3DB00FEC6E5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = pointDetailView.xib; sourceTree = "<group>"; };
 		32F5FB811DFC82E1002521F5 /* pointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pointDetailView.swift; sourceTree = "<group>"; };
 		32FF8CE01DF719E500A5CAA5 /* myGuideUserStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myGuideUserStore.entitlements; sourceTree = "<group>"; };
@@ -118,6 +124,7 @@
 				320A1F581DFF7F6D00117D7B /* AVFoundation.framework in Frameworks */,
 				320C6D1E1DF88CD200B60430 /* CoreData.framework in Frameworks */,
 				7B78F70EFF30A7CAA06146D3 /* Pods_myGuideUserStore.framework in Frameworks */,
+				32A26A971E01D3DB00FEC6E5 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +196,8 @@
 				32085AC71DFD355700A4548B /* TitleAndDisplayTableViewCell.swift */,
 				32085AC51DFD32AD00A4548B /* TitleAndDisplayCell.xib */,
 				3202C7E21DECBF36003A8B4C /* StoreCell.xib */,
+				32A26A941E01B72C00FEC6E5 /* reviewTableViewCell.swift */,
+				32A26A921E01A7BD00FEC6E5 /* reviewCell.xib */,
 				3202C7B51DECBBE7003A8B4C /* Assets.xcassets */,
 				3202C7B71DECBBE7003A8B4C /* LaunchScreen.storyboard */,
 				3202C7BA1DECBBE7003A8B4C /* Info.plist */,
@@ -219,6 +228,7 @@
 		4106B22C298A071714931533 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32A26A961E01D3DB00FEC6E5 /* StoreKit.framework */,
 				320A1F571DFF7F6D00117D7B /* AVFoundation.framework */,
 				320C6D1D1DF88CD200B60430 /* CoreData.framework */,
 				4A508D9F738E34ABC7DFA3A0 /* Pods_myGuideUserStore.framework */,
@@ -321,6 +331,9 @@
 						DevelopmentTeam = 77BY68R34P;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
 							com.apple.Keychain = {
 								enabled = 1;
 							};
@@ -366,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3202C7B91DECBBE7003A8B4C /* LaunchScreen.storyboard in Resources */,
+				32A26A931E01A7BD00FEC6E5 /* reviewCell.xib in Resources */,
 				32085ACA1DFE413D00A4548B /* sortingView.xib in Resources */,
 				3216636F1DFA1DEF0047A315 /* endRatingView.xib in Resources */,
 				3202C7B61DECBBE7003A8B4C /* Assets.xcassets in Resources */,
@@ -542,6 +556,7 @@
 				321663731DFA23660047A315 /* ReviewView.swift in Sources */,
 				320C6D201DF8908800B60430 /* MyToursViewController.swift in Sources */,
 				32085ACC1DFE422300A4548B /* sortingView.swift in Sources */,
+				32A26A951E01B72C00FEC6E5 /* reviewTableViewCell.swift in Sources */,
 				320C6D221DF8B92A00B60430 /* TourViewController.swift in Sources */,
 				323CB11F1DF714D1006ED9A2 /* LoginViewController.swift in Sources */,
 				32F5FB821DFC82E1002521F5 /* pointDetailView.swift in Sources */,

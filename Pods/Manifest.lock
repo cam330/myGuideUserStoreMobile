@@ -47,6 +47,7 @@ PODS:
     - GoogleToolboxForMac/NSString+URLArguments (= 2.1.0)
   - GoogleToolboxForMac/NSString+URLArguments (2.1.0)
   - GTMSessionFetcher/Core (1.1.7)
+  - Stripe (9.2.0)
 
 DEPENDENCIES:
   - Cosmos (~> 7.0)
@@ -55,6 +56,7 @@ DEPENDENCIES:
   - Firebase/Core
   - Firebase/Database
   - Firebase/Storage
+  - Stripe
 
 SPEC CHECKSUMS:
   Cosmos: 2c8299147138758f6ebbb247cf1aeed77998bdf9
@@ -69,7 +71,8 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleToolboxForMac: 2b2596cbb7186865e98cadf2b1e262d851c2b168
   GTMSessionFetcher: a1f8ed39e4fe21c68957daed472c7afbcdf29166
+  Stripe: a47770e82db059d0e7e160f9aabc2997055ee911
 
-PODFILE CHECKSUM: 971e16f6fd3d5db4413d9d19990ab1c2886bda21
+PODFILE CHECKSUM: 43b247a2676545ce027f1d3bf723c7381aa1e0cc
 
 COCOAPODS: 1.1.1

@@ -7,6 +7,7 @@ pod 'Firebase/Storage'
 pod 'Firebase'
 pod 'Firebase/Auth'
 pod 'Cosmos', '~> 7.0'
+pod 'Stripe'
 
 target 'myGuideUserStore' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
