@@ -52,6 +52,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.tintColor = .white
+        
         self.audioSlider.setThumbImage(self.generateHandleImage(with: .white), for: .normal)
         
         self.audioView.isHidden = true
@@ -218,7 +220,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     
     @IBAction func submitReview(sender: UIButton!) {
         navigationController?.navigationBar.isUserInteractionEnabled=true
-        navigationController?.navigationBar.tintColor = self.view.tintColor
+        navigationController?.navigationBar.tintColor = .white
         
         let user = FIRAuth.auth()?.currentUser
         
@@ -245,7 +247,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         self.blurEffectView.removeFromSuperview()
         self.audioView.isHidden = false
         navigationController?.navigationBar.isUserInteractionEnabled=true
-        navigationController?.navigationBar.tintColor = self.view.tintColor
+        navigationController?.navigationBar.tintColor = .white
     }
     
     @IBAction func pointSelect(sender: UIButton!){

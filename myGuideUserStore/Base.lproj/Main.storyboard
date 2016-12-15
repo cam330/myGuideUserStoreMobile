@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="LL7-Fi-v8O">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Rhe-b6-tJP">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -528,10 +528,18 @@
                                     <action selector="loginButtonAction:" destination="LL7-Fi-v8O" eventType="touchUpInside" id="nig-Ce-gP4"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="MyGuide" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sYP-Yg-I6d">
+                                <rect key="frame" x="16" y="72" width="343" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="4K3-PV-Brc"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
                     <connections>
                         <outlet property="emailField" destination="7z0-wr-gtn" id="dZm-8G-GvM"/>
                         <outlet property="passwordField" destination="SwQ-FT-Yy5" id="LVx-Ym-4xM"/>
@@ -674,13 +682,6 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="39"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="3h 34m" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJU-EB-4ed">
-                                                            <rect key="frame" x="301" y="8" width="74" height="21"/>
-                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
                                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nak-Rj-PAO">
                                                             <rect key="frame" x="8" y="0.0" width="49" height="38"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -689,12 +690,20 @@
                                                                 <action selector="likeButtonPressWithSender:" destination="8Jp-vz-D4q" eventType="touchUpInside" id="R8K-cE-RIE"/>
                                                             </connections>
                                                         </button>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="⌚︎3:22:22" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BJU-EB-4ed">
+                                                            <rect key="frame" x="257" y="8" width="110" height="21"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
                                                     </subviews>
                                                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.1787510702" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </view>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="durationLabel" destination="BJU-EB-4ed" id="fr8-Dd-fbc"/>
                                             <outlet property="likeButton" destination="nak-Rj-PAO" id="07Y-BI-0C0"/>
                                             <outlet property="priceLabel" destination="ivx-W0-y3n" id="5Ya-pD-AH2"/>
                                             <outlet property="starView" destination="UrT-eC-PPK" id="21c-Kt-vz3"/>
@@ -1028,7 +1037,7 @@
             </objects>
             <point key="canvasLocation" x="9372" y="-646.32683658170924"/>
         </scene>
-        <!--My Tours View Controller-->
+        <!--My Tours-->
         <scene sceneID="66F-rx-TOA">
             <objects>
                 <viewController id="JrK-1Q-rsz" customClass="MyToursViewController" customModule="myGuideUserStore" customModuleProvider="target" sceneMemberID="viewController">
@@ -1106,7 +1115,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="DqU-SJ-XkQ">
+                    <navigationItem key="navigationItem" title="My Tours" id="DqU-SJ-XkQ">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="tbB-Uw-yaS">
                             <connections>
                                 <segue destination="LL7-Fi-v8O" kind="show" animates="NO" id="pfg-q2-UkZ"/>
@@ -1227,9 +1236,14 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Rhe-b6-tJP" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="04r-R7-MkY">
+                    <navigationBar key="navigationBar" alpha="0.5" contentMode="scaleToFill" misplaced="YES" id="04r-R7-MkY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.55946238362487999" green="0.93410176946427015" blue="0.73234495773660269" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

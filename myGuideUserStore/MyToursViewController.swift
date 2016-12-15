@@ -38,6 +38,8 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        navigationController?.navigationBar.tintColor = .white
+        
         let fetchRequest: NSFetchRequest<Tour> = Tour.fetchRequest()
         
         do {

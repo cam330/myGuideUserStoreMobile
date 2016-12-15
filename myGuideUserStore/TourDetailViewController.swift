@@ -98,6 +98,8 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationController?.navigationBar.tintColor = .white
 
         print("HERES THE NAME", self.tourId)
 //        self.tourId = "btChJXUrUhbbJYpJuEPoZ17lfv731481298858803"
@@ -123,42 +125,48 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 self.namesArray = snapshot.value as! NSDictionary!
                 print("YESS",self.namesArray)
-                
-                
-                
-                
-//                let passingData = ((points as AnyObject).object(at: i) as AnyObject).value(forKey: "sampleAudio") as! String
-                
-                if (self.namesArray.object(forKey: "sampleAudio") != nil) {
-                   
-                    let passingData = (self.namesArray.value(forKey: "sampleAudio")as! String)
-                    
-                    //            print(passingData)
-                    let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
-                    //            print(nsd)
-                    
-                    
-                    
-                    self.audioDataString = String(format: "%@", passingData as CVarArg)
-                    
-                    self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
-                    
-                    print(self.audioData)
-                    print("DONE HERE")
-                    
-                    
-                    self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
-                    
-                    
-                    
-
-                }
+//                
+//                
+//                
+////                let passingData = ((points as AnyObject).object(at: i) as AnyObject).value(forKey: "sampleAudio") as! String
+//                
+//                if (self.namesArray.object(forKey: "sampleAudio") != nil) {
+//                   
+//                    let passingData = (self.namesArray.value(forKey: "sampleAudio")as! String)
+//                    
+//                    //            print(passingData)
+////                    let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
+//                    //            print(nsd)
+//                    
+//                    
+//                    
+//                    
+//                    
+//                    
+//
+//                }
                 
                 self.tourArray.insert(self.namesArray, at: 0)
                 self.tableView.reloadData()
                 
             })
 
+        ref.child("audioSamples").child(self.tourId as String).observe(.value, with:  {sampleAudio in
+            let audioSamp = sampleAudio.value as! String
+            
+            self.audioDataString = String(format: "%@", audioSamp as CVarArg)
+            
+            self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
+            
+            print(self.audioData)
+            print("DONE HERE", audioSamp)
+            
+            
+            self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+
+            
+        })
+        
         ref.child("tours").child(self.tourId as String).child("downloads").observe(.value, with: {snap in
             let snapValue = snap.value
             self.downloadCount = (snapValue as AnyObject).integerValue
@@ -489,6 +497,10 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             
         
         return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
     }
     
 

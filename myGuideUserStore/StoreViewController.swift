@@ -31,6 +31,7 @@ class TourTableViewCell: UITableViewCell {
     var tourId: NSString!
     @IBOutlet var priceLabel: UILabel!
     @IBOutlet var likeButton: UIButton!
+    @IBOutlet var durationLabel: UILabel!
 }
 
 class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDataSource, UIPickerViewDelegate {
@@ -84,9 +85,19 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var disableView = UIView()
 
     @IBOutlet var tableView: UITableView!
+    
+    var indicator = UIActivityIndicatorView()
+    var loadingView = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationController?.navigationBar.tintColor = .white
+        
+        self.activityIndicator()
+        
+        self.indicator.startAnimating()
+        self.indicator.backgroundColor = UIColor.white
         
         self.title = self.countryToSelect as String?
         
@@ -132,6 +143,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
             
             for item in snapshot.children {
+
+                
                 let child = item as! FIRDataSnapshot
                 let dict = child.value as! NSDictionary
                 let newDict: NSMutableDictionary = NSMutableDictionary()
@@ -147,6 +160,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 newDict.setValue(dict.value(forKey: "price") ?? NSString(), forKey: "price")
                 newDict.setValue(dict.value(forKey: "reviews"), forKey: "reviews")
                 newDict.setValue(false, forKey: "liked")
+                newDict.setValue(dict.value(forKey: "duration"), forKey: "duration")
                     
                 let obTitle = dict.value(forKey: "title") ?? String()
 //                var obCountry = dict.value(forKey: "country") ?? String()
@@ -175,11 +189,20 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //            print(self.passingDict.count)
 //            print(self.passingDict)
             self.tableView.reloadData()
+//            self.activityIndicator()
+            
+            self.indicator.stopAnimating()
+            self.loadingView.removeFromSuperview()
             self.alert.dismiss(animated: true, completion: nil)
             
                 
         })
  
+    }
+    //converts seconds coming in to hours minutes seconds
+    
+    func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
+        return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
     }
     
 //    override func viewWillAppear(_ animated: Bool) {
@@ -205,6 +228,23 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //        let registeredUserRef = ref.child("tours").child()
 //        print(registeredUserRef)
 //    }
+    
+    func activityIndicator() {
+        indicator = UIActivityIndicatorView(frame: CGRect(x:0, y:0, width:0, height:0))
+        indicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
+        indicator.center = self.view.center
+                self.loadingView = UIView(frame: CGRect(x:0, y:0, width:self.view.frame.width, height:self.view.frame.height))
+                self.loadingView.backgroundColor = UIColor.init(colorLiteralRed: 0, green: 0, blue: 0, alpha: 0.5)
+        //        view.backgroundColor
+        //        self.view.addSubview(view)
+//        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
+//        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+//        blurEffectView.frame = view.bounds
+        //        blurEffectView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+//        self.view.addSubview(blurEffectView)
+        self.view.addSubview(self.loadingView);
+        self.view.addSubview(indicator)
+    }
     
     @IBAction func likeButtonPress (sender: UIButton) {
         
@@ -297,6 +337,11 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             } else {
                 cell.likeButton.setImage(#imageLiteral(resourceName: "heart-full"), for: .normal)
             }
+            let timeInSeconds = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "duration")!
+            let (h, m, s) = self.secondsToHoursMinutesSeconds(seconds: timeInSeconds as! Int)
+            print ("\(h) H, \(m) M, \(s) S")
+            cell.durationLabel.text = "⌚︎\(h):\(m):\(s)"
+            
         }
         return cell
     }
@@ -350,7 +395,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.disableView.removeFromSuperview()
         
         navigationController?.navigationBar.isUserInteractionEnabled=true
-        navigationController?.navigationBar.tintColor = self.view.tintColor
+        navigationController?.navigationBar.tintColor = .white
         
     }
     
@@ -359,7 +404,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.tableView.isUserInteractionEnabled = true
         self.disableView.removeFromSuperview()
         navigationController?.navigationBar.isUserInteractionEnabled=true
-        navigationController?.navigationBar.tintColor = self.view.tintColor
+        navigationController?.navigationBar.tintColor = .white
     }
     
     // MARK: - Navigation
