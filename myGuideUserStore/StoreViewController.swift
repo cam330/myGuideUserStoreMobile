@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import FirebaseAuth
 import Cosmos
+import QuartzCore
 
 final class TourObj: NSObject {
     
@@ -32,6 +33,10 @@ class TourTableViewCell: UITableViewCell {
     @IBOutlet var priceLabel: UILabel!
     @IBOutlet var likeButton: UIButton!
     @IBOutlet var durationLabel: UILabel!
+    @IBOutlet var topBarView: UIView!
+    @IBOutlet var bottomBarView: UIView!
+    
+    @IBOutlet var backgroundImage: UIImageView!
 }
 
 class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDataSource, UIPickerViewDelegate {
@@ -310,6 +315,26 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         cell.starView.transform = CGAffineTransform(scaleX: -1.0, y: 1.0);
         
         if self.presentingArray.count > 0 {
+            
+            cell.topBarView.layer.shadowColor = UIColor.black.cgColor
+            cell.topBarView.layer.shadowOpacity = 0.5
+            cell.topBarView.layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
+            cell.topBarView.layer.shadowRadius = 5
+//
+//            cell.bottomBarView.layer.shadowColor = UIColor.black.cgColor
+//            cell.bottomBarView.layer.shadowOpacity = 0.5
+//            cell.bottomBarView.layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
+//            cell.bottomBarView.layer.shadowRadius = -5
+//            
+            cell.bottomBarView.layer.shadowColor = UIColor.black.cgColor
+            cell.bottomBarView.layer.shadowOffset = CGSize.zero
+            cell.bottomBarView.layer.shadowOpacity = 0.5
+            cell.bottomBarView.layer.shadowRadius = 5
+            cell.backgroundImage.image = UIImage(named: "\((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "attraction") as! NSString)")
+           
+            cell.backgroundView = UIView()
+            cell.backgroundView!.addSubview(cell.backgroundImage)
+            
             cell.tourId = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "tourId") as! NSString
             cell.titleLabel.text = "\((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "title") as! NSString)"
             cell.tourGuideNameLabel.text = "\((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "attraction") as! NSString),\((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "country") as! NSString)"
@@ -341,6 +366,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let (h, m, s) = self.secondsToHoursMinutesSeconds(seconds: timeInSeconds as! Int)
             print ("\(h) H, \(m) M, \(s) S")
             cell.durationLabel.text = "⌚︎\(h):\(m):\(s)"
+            
+           
             
         }
         return cell

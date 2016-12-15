@@ -28,6 +28,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
     var tourId: String!
     var tourToPass: Any!
     var toursArray: NSArray!
+    var tourAttraction: String!
 //    var tourObject: Any!
     
 
@@ -109,6 +110,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         self.tourToPass = toursArray.object(at: indexPath.row);
         self.tourId = cell.tourId
+        self.tourAttraction = (toursArray[indexPath.row] as AnyObject).value(forKey: "tourAttraction") as! String
         
         [self.performSegue(withIdentifier: "showTourSegue", sender: self)]
     }
@@ -149,7 +151,7 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             tourPage?.theTour = self.tourToPass
             tourPage?.tourId = self.tourId
-            
+            tourPage?.tourBackground = self.tourAttraction
             
         }
     }

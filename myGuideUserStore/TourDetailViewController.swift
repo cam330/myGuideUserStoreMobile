@@ -60,8 +60,7 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
 //    var audioData: NSData!
 //    var audioDataString:String = ""
     
-    
-    
+    @IBOutlet var tourImageView: UIImageView!
     let ref = FIRDatabase.database().reference()
     var tourId: NSString!
     
@@ -99,6 +98,8 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        
         navigationController?.navigationBar.tintColor = .white
 
         print("HERES THE NAME", self.tourId)
@@ -125,6 +126,8 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 self.namesArray = snapshot.value as! NSDictionary!
                 print("YESS",self.namesArray)
+                
+                self.tourImageView.image = UIImage(named: self.namesArray.value(forKey: "attraction")as! String)
 //                
 //                
 //                
@@ -152,7 +155,12 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             })
 
         ref.child("audioSamples").child(self.tourId as String).observe(.value, with:  {sampleAudio in
+            print(sampleAudio.value as! String)
+            if sampleAudio.value != NSNull {
+            
             let audioSamp = sampleAudio.value as! String
+            
+
             
             self.audioDataString = String(format: "%@", audioSamp as CVarArg)
             
@@ -163,7 +171,7 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             
             
             self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
-
+            }
             
         })
         
@@ -378,7 +386,7 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         if indexPath.row == 0 {
-            return 90
+            return 120
         } else if indexPath.row == 1 {
             return 100
         } else if indexPath.row == 2{
@@ -450,37 +458,40 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 return cell!
             }
             if indexPath.row == 6 || indexPath.row == 7 || indexPath.row == 8 {
-////                print(self.allReviewValues.object(at: indexPath.row - 6))
-////                print((self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double)
-////                let rating = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double
-////                print("TATA", rating)
-////                
+//                print(self.allReviewValues.object(at: indexPath.row - 6))
+//                print((self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double)
+//                let rating = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double
+//                print("TATA", rating)
 //                
-//                let dateNumber = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "datePosted") as! NSNumber
-//                let myTimeInterval = TimeInterval(dateNumber.doubleValue)
-//                
-////                let date = NSDate(NSTimeIntervalSince1970: myTimeInterval)
-//                let newYears1971 = Date(timeIntervalSince1970: dateNumber.doubleValue as TimeInterval)
-//                print("date is \(newYears1971)")
-////                
-////                print(date)
-////                
-//                let formatter = DateFormatter()
-////                formatter.dateStyle = DateFormatter.Style.short
-//                let convertedDate = formatter.string(from: newYears1971 as Date)
-//                
-//                print(convertedDate)
-//                
-//                
-//                
-//                print(myTimeInterval)
-//                
-//                reviewCell.starView.rating = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double
-//                reviewCell.nameLabel.text = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "user") as? String
-//                reviewCell.reviewText.text = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "comment") as! String
-////                reviewCell.datePostedLabel.text = postedDate
-////                reviewCell.nameLabel!.text = "JELLo"as! String
+                if (self.namesArray.object(forKey: "rating") != nil) {
+                    let dateNumber = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "datePosted") as! NSNumber
+                    let myTimeInterval = TimeInterval(dateNumber.doubleValue)
+                    
+                    //                let date = NSDate(NSTimeIntervalSince1970: myTimeInterval)
+                    let newYears1971 = Date(timeIntervalSince1970: dateNumber.doubleValue as TimeInterval)
+                    print("date is \(newYears1971)")
+                    //
+                    //                print(date)
+                    //
+                    let formatter = DateFormatter()
+                    //                formatter.dateStyle = DateFormatter.Style.short
+                    let convertedDate = formatter.string(from: newYears1971 as Date)
+                    
+                    print(convertedDate)
+                    
+                    
+                    
+                    print(myTimeInterval)
+                    
+                    reviewCell.starView.rating = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double
+                    reviewCell.nameLabel.text = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "user") as? String
+                    reviewCell.reviewText.text = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "comment") as! String
+                    //                reviewCell.datePostedLabel.text = postedDate
+                    //                reviewCell.nameLabel!.text = "JELLo"as! String
 
+                }
+                
+                
                 return reviewCell
             }
             if indexPath.row == 9 {

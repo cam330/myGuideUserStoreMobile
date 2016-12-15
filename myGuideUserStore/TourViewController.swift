@@ -44,6 +44,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     var count = Int()
     var tourId = String()
     
+    var tourBackground: String!
+    
     
     @IBOutlet var playingLabel: UILabel!
     
@@ -112,7 +114,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
             pointButton.setTitle("\(i+1)", for: .normal)
             pointButton.setTitleColor(UIColor.white, for: .normal)
             pointButton.backgroundColor = #colorLiteral(red: 0.2267478406, green: 0.8977500796, blue: 0.624830544, alpha: 1)
-            pointButton.frame = CGRect(x:pointPlacementTop-5, y:pointPlacementLeft-20, width:20, height:20)
+            pointButton.frame = CGRect(x:pointPlacementTop+5, y:pointPlacementLeft+20, width:20, height:20)
             pointButton.layer.cornerRadius = 10;
             pointButton.addTarget(self, action: #selector(pointSelect(sender:)), for: .touchUpInside)
             self.tourMap.addSubview(pointButton)
@@ -149,7 +151,12 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
 
     }
     
-
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        self.tourMap.image = UIImage(named:"\(self.tourBackground!)Map")
+        print("\(self.tourBackground!)Map")
+    }
 
     @IBAction func respondToSwipeGesture(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
