@@ -28,8 +28,6 @@ class LoginViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-
 
     @IBAction func loginButtonAction(_ sender: Any) {
         FIRAuth.auth()?.signIn(withEmail: self.emailField.text!, password: self.passwordField.text!) { (user, error) in
@@ -44,6 +42,7 @@ class LoginViewController: UIViewController {
             }
         }
     }
+
     /*
     // MARK: - Navigation
 

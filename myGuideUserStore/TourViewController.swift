@@ -108,9 +108,10 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         
             let pointButton = UIButton()
             pointButton.setTitle("\(i+1)", for: .normal)
-            pointButton.setTitleColor(UIColor.blue, for: .normal)
-            pointButton.backgroundColor = UIColor.green
+            pointButton.setTitleColor(UIColor.white, for: .normal)
+            pointButton.backgroundColor = #colorLiteral(red: 0.2267478406, green: 0.8977500796, blue: 0.624830544, alpha: 1)
             pointButton.frame = CGRect(x:pointPlacementTop-5, y:pointPlacementLeft-20, width:20, height:20)
+            pointButton.layer.cornerRadius = 10;
             pointButton.addTarget(self, action: #selector(pointSelect(sender:)), for: .touchUpInside)
             self.tourMap.addSubview(pointButton)
             self.tourMap.bringSubview(toFront: pointButton)
@@ -252,8 +253,8 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         self.audioView.isHidden = false
         
         for subview in self.tourMap.subviews{
-            subview.backgroundColor = UIColor.green
-            sender.backgroundColor = UIColor.red
+            subview.backgroundColor = #colorLiteral(red: 0.2267478406, green: 0.8977500796, blue: 0.624830544, alpha: 1)
+            sender.backgroundColor = #colorLiteral(red: 0.6642150853, green: 0.0001854552479, blue: 0.9646454632, alpha: 1)
         }
         
         

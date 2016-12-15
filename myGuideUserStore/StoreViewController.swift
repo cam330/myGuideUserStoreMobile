@@ -37,6 +37,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
 //    var ref: FIRDatabaseReference!
 
+    @IBOutlet var sortButtonView: UIView!
     let ref = FIRDatabase.database().reference()
     var refHandle: UInt!
     var tourArray: NSMutableArray = []
@@ -91,8 +92,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         let registeredUserRef = ref.child("tours")
         
-        
-        
+//        self.sortButtonView.backgroundColor = UIColor.init(colorLiteralRed: 255, green: 255, blue: 255, alpha: 0.5)
         //Use this to get back all values from china
 //        registeredUserRef.queryOrdered(byChild: "country").queryEqual(toValue: "China").observe(.value, with: { firDataSnapshot in
         
@@ -119,6 +119,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //            self.tableView.reloadData()
 //            
 //        })
+        
+        self.navigationItem.rightBarButtonItem =  UIBarButtonItem(title: "Sort", style: .plain, target: self, action: #selector(sortResults(sender:)))
         
         registeredUserRef.observe(.value, with: { snapshot in
             
@@ -282,9 +284,14 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             print(cell.tourId)
             let total = ((((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews") ?? String()) as AnyObject).value(forKey: "total")) as! Int
             let count = ((((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews") ?? String()) as AnyObject).value(forKey: "count")) as! Int
+            print(total)
+            print(count)
 //            print((self.presentingArray[indexPath.row] as AnyObject).value(forKey: "reviews")[1])
+            if total > 0 {
             cell.starView.rating = Double(total/count)
-            
+            } else {
+                cell.starView.rating = 5
+            }
             if (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "liked") as! Bool == false {
                 cell.likeButton.setImage(#imageLiteral(resourceName: "heart-empty"), for: .normal)
             } else {
@@ -298,6 +305,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         let cell = tableView.cellForRow(at: indexPath)as! TourTableViewCell
         
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        
         print(cell.tourId)
         
         tableView.deselectRow(at: indexPath, animated: true)
@@ -310,7 +319,9 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     @IBAction func sortResults(sender: UIButton) {
 
-        self.sortPicker = sortingView(frame: CGRect(x:0, y:self.tableView.frame.height - 100 , width:375 , height: 150))
+        navigationController?.navigationBar.isUserInteractionEnabled=false
+        navigationController?.navigationBar.tintColor = UIColor.lightGray
+        self.sortPicker = sortingView(frame: CGRect(x:0, y:self.tableView.frame.height-150 , width:375 , height: 150))
         self.sortPicker.sortButton.addTarget(self, action: #selector(sortTable(sender:)), for: .touchUpInside)
         self.sortPicker.cancelButton.addTarget(self, action: #selector(cancelSort(sender:)), for: .touchUpInside)
         self.disableView = UIView(frame: CGRect(x:0, y:0 , width: self.view.frame.width , height: self.view.frame.height))
@@ -338,12 +349,17 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.tableView.isUserInteractionEnabled = true
         self.disableView.removeFromSuperview()
         
+        navigationController?.navigationBar.isUserInteractionEnabled=true
+        navigationController?.navigationBar.tintColor = self.view.tintColor
+        
     }
     
     @IBAction func cancelSort(sender: UIButton) {
         self.sortPicker.removeFromSuperview()
         self.tableView.isUserInteractionEnabled = true
         self.disableView.removeFromSuperview()
+        navigationController?.navigationBar.isUserInteractionEnabled=true
+        navigationController?.navigationBar.tintColor = self.view.tintColor
     }
     
     // MARK: - Navigation

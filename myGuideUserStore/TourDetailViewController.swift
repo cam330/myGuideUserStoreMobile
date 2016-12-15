@@ -11,7 +11,7 @@ import Firebase
 import FirebaseAuth
 import CoreData
 import Cosmos
-import Stripe
+import AVFoundation
 
 
 class tourReviewCell: UITableViewCell {
@@ -38,7 +38,6 @@ class TourDetailsCell: UITableViewCell {
 
 class AudioSampleCell: UITableViewCell {
     @IBOutlet var playButton: UIButton!
-    @IBOutlet var audioProgres: UIProgressView!
 }
 
 class ReviewCell: UITableViewCell {
@@ -46,10 +45,21 @@ class ReviewCell: UITableViewCell {
     @IBOutlet var datePostedLabel: UILabel!
     @IBOutlet var starView: CosmosView!
     @IBOutlet var profileImage: UIImageView!
-    @IBOutlet var reviewTest: UITextView!
+    @IBOutlet var reviewText: UITextView!
 }
 
-class TourDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TourDetailViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AVAudioPlayerDelegate {
+    
+    
+//    @IBOutlet var audioView: UIView!
+//    @IBOutlet var remainingTimeLabel: UILabel!
+//    @IBOutlet var audioSlider: UISlider!
+//    @IBOutlet var playPauseButton: UIButton!
+    
+    var audioPlayer: AVAudioPlayer?
+//    var audioData: NSData!
+//    var audioDataString:String = ""
+    
     
     
     let ref = FIRDatabase.database().reference()
@@ -77,13 +87,21 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var tourArray: NSMutableArray = []
     
+    var reviewsDict: NSMutableDictionary!
+    
+    var allReviewValues: NSArray!
+    
+    var numberOfDownloads: Int!
+    
+    
     
     @IBOutlet var titleLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
 
-//        print("HERES THE NAME", self.tourId)
-        self.tourId = "btChJXUrUhbbJYpJuEPoZ17lfv731481125126181";
+        print("HERES THE NAME", self.tourId)
+//        self.tourId = "btChJXUrUhbbJYpJuEPoZ17lfv731481298858803"
+//        self.tourId = "btChJXUrUhbbJYpJuEPoZ17lfv731481765932801"
         
 //        let bgImgView = UIImageView(image: UIImage(named: "chichenitza"))
 //        bgImgView.frame = self.tableView.frame
@@ -95,17 +113,50 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
 //        backgroundImage.clipsToBounds = true
 //        backgroundImage.image = UIImage(named: "chichenitza");
         
-        let registeredUserRef = ref.child("tours").child(self.tourId as String)
+        self.numberOfDownloads = 0
         
+        let registeredUserRef = ref.child("tours").child(self.tourId as String)
+        let reviewRef = ref.child("reviews").child(self.tourId as String)
         
             registeredUserRef.observe(.value, with: { snapshot in
                 
                 
                 self.namesArray = snapshot.value as! NSDictionary!
-                print(self.namesArray)
+                print("YESS",self.namesArray)
+                
+                
+                
+                
+//                let passingData = ((points as AnyObject).object(at: i) as AnyObject).value(forKey: "sampleAudio") as! String
+                
+                if (self.namesArray.object(forKey: "sampleAudio") != nil) {
+                   
+                    let passingData = (self.namesArray.value(forKey: "sampleAudio")as! String)
+                    
+                    //            print(passingData)
+                    let nsd:NSData = NSData(base64Encoded: passingData, options: NSData.Base64DecodingOptions.ignoreUnknownCharacters)!
+                    //            print(nsd)
+                    
+                    
+                    
+                    self.audioDataString = String(format: "%@", passingData as CVarArg)
+                    
+                    self.audioData = NSData(base64Encoded: self.audioDataString, options: [])
+                    
+                    print(self.audioData)
+                    print("DONE HERE")
+                    
+                    
+                    self.audioPlayer = try! AVAudioPlayer(data: self.audioData as Data, fileTypeHint: AVFileTypeWAVE)
+                    
+                    
+                    
+
+                }
                 
                 self.tourArray.insert(self.namesArray, at: 0)
                 self.tableView.reloadData()
+                
             })
 
         ref.child("tours").child(self.tourId as String).child("downloads").observe(.value, with: {snap in
@@ -115,8 +166,19 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             
         })
         
-        
-
+        if self.numberOfDownloads > 0 {
+        reviewRef.observe(.value, with: { snap in
+            let toursArray = snap.value!
+            
+            self.reviewsDict = snap.value as! NSMutableDictionary
+            
+            self.allReviewValues = self.reviewsDict.allValues as NSArray
+            
+            print(self.allReviewValues[0])
+        })
+        } else {
+            print("GOING HERE")
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -256,7 +318,7 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         }))
         
         self.present(alert, animated: true, completion: nil)
-        indicator.stopAnimating()
+//        indicator.stopAnimating()
         
         
     }
@@ -348,24 +410,31 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
             }
             if indexPath.row == 1 {
                 titleCell.titleLabel.text = self.namesArray!.value(forKey: "title") as! String?
-                titleCell.locationLabel.text = "\(self.namesArray!.value(forKey: "attraction") as! String?), \(self.namesArray!.value(forKey: "country") as! String?)"
+                titleCell.locationLabel.text = "\(self.namesArray!.value(forKey: "attraction")!), \(self.namesArray!.value(forKey: "country")!)"
                 titleCell.companyLabel.text = self.namesArray!.value(forKey: "guide") as! String?
                 return titleCell
             }
             if indexPath.row == 2 {
-                statsCell.downloadsLabel.text = self.namesArray!.value(forKey: "downloads") as! String?
-                let count = (self.namesArray!.value(forKey: "reviews") as! Array)[0]
-                let total = (self.namesArray!.value(forKey: "reviews") as! Array)[1]
-//                let value = total!/count!
-                print(total, count)
+                statsCell.downloadsLabel.text = "\(self.namesArray!.value(forKey: "downloads"))"
+//                let count = (self.namesArray!.value(forKey: "reviews") as AnyObject).value(forKey: "count")
+//                print(count)
+//                let total = (self.namesArray!.value(forKey: "reviews") as AnyObject).value(forKey: "total")
+//                print(total)
+//                let value = (total as! Int) / (count as! Int)
+//                print(value)
 //                statsCell.ratingView.rating = Double(value)
-                statsCell.priceLabel.text = self.namesArray!.value(forKey: "price") as! String?
+                self.numberOfDownloads = 0
+                statsCell.priceLabel.text = "$\(self.namesArray!.value(forKey: "price") as! String?)"
                 return statsCell
             }
             if indexPath.row == 3 {
+                detailCell.detailTextView.text = self.namesArray!.value(forKey: "description") as! String?
                 return detailCell
             }
             if indexPath.row == 4 {
+
+                
+                audioSampleCell.playButton.addTarget(self, action: #selector(playAudio(sender:)), for: .touchUpInside)
                 return audioSampleCell
             }
             if indexPath.row == 5 {
@@ -373,6 +442,37 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 return cell!
             }
             if indexPath.row == 6 || indexPath.row == 7 || indexPath.row == 8 {
+////                print(self.allReviewValues.object(at: indexPath.row - 6))
+////                print((self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double)
+////                let rating = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double
+////                print("TATA", rating)
+////                
+//                
+//                let dateNumber = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "datePosted") as! NSNumber
+//                let myTimeInterval = TimeInterval(dateNumber.doubleValue)
+//                
+////                let date = NSDate(NSTimeIntervalSince1970: myTimeInterval)
+//                let newYears1971 = Date(timeIntervalSince1970: dateNumber.doubleValue as TimeInterval)
+//                print("date is \(newYears1971)")
+////                
+////                print(date)
+////                
+//                let formatter = DateFormatter()
+////                formatter.dateStyle = DateFormatter.Style.short
+//                let convertedDate = formatter.string(from: newYears1971 as Date)
+//                
+//                print(convertedDate)
+//                
+//                
+//                
+//                print(myTimeInterval)
+//                
+//                reviewCell.starView.rating = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "rating") as! Double
+//                reviewCell.nameLabel.text = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "user") as? String
+//                reviewCell.reviewText.text = (self.allReviewValues[indexPath.row - 6] as AnyObject).value(forKey: "comment") as! String
+////                reviewCell.datePostedLabel.text = postedDate
+////                reviewCell.nameLabel!.text = "JELLo"as! String
+
                 return reviewCell
             }
             if indexPath.row == 9 {
@@ -390,8 +490,14 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
         return cell!
     }
-
     
+
+    @IBAction func playAudio(sender: UIButton!) {
+        print("HELLLLO")
+        self.audioPlayer?.delegate = self
+        self.audioPlayer?.prepareToPlay()
+        self.audioPlayer?.play()
+    }
 
     /*
     // MARK: - Navigation
