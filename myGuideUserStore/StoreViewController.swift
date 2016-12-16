@@ -88,6 +88,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var sortBy = NSSortDescriptor()
     
     var disableView = UIView()
+    
+    var tourDuration = String()
 
     @IBOutlet var tableView: UITableView!
     
@@ -98,6 +100,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         super.viewDidLoad()
         
         navigationController?.navigationBar.tintColor = .white
+        
         
         self.activityIndicator()
         
@@ -137,6 +140,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
 //        })
         
         self.navigationItem.rightBarButtonItem =  UIBarButtonItem(title: "Sort", style: .plain, target: self, action: #selector(sortResults(sender:)))
+        self.navigationItem.leftBarButtonItem =  UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(goBack(sender:)))
         
         registeredUserRef.observe(.value, with: { snapshot in
             
@@ -208,6 +212,10 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
         return (seconds / 3600, (seconds % 3600) / 60, (seconds % 3600) % 60)
+    }
+    
+    @IBAction func goBack(sender: UIButton) {
+        navigationController?.popViewController(animated: true)
     }
     
 //    override func viewWillAppear(_ animated: Bool) {
@@ -365,9 +373,10 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let timeInSeconds = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "duration")!
             let (h, m, s) = self.secondsToHoursMinutesSeconds(seconds: timeInSeconds as! Int)
             print ("\(h) H, \(m) M, \(s) S")
+            self.tourDuration = "⌚︎\(h):\(m):\(s)"
             cell.durationLabel.text = "⌚︎\(h):\(m):\(s)"
             
-           
+           cell.selectionStyle = UITableViewCellSelectionStyle.none
             
         }
         return cell
@@ -376,8 +385,6 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let cell = tableView.cellForRow(at: indexPath)as! TourTableViewCell
-        
-        cell.selectionStyle = UITableViewCellSelectionStyle.none
         
         print(cell.tourId)
         
@@ -442,7 +449,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let nextScene = segue.destination as? TourDetailViewController
             
             nextScene?.tourId = self.tourId
-            
+            nextScene?.tourDuration = self.tourDuration
 
         }
     }

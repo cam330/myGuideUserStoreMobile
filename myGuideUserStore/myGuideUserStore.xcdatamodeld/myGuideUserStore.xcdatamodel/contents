@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="16A323" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16A323" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Tour" representedClassName="Tour" syncable="YES" codeGenerationType="class">
         <attribute name="expireDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="tourAttraction" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tourCountry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tourDuration" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tourId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tourPoints" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="tourPointsAudio" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="tourTitle" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Tour" positionX="-63" positionY="-18" width="128" height="150"/>
+        <element name="Tour" positionX="-63" positionY="-18" width="128" height="165"/>
     </elements>
 </model>

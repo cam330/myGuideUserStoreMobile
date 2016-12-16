@@ -38,6 +38,7 @@
 		32A26A931E01A7BD00FEC6E5 /* reviewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32A26A921E01A7BD00FEC6E5 /* reviewCell.xib */; };
 		32A26A951E01B72C00FEC6E5 /* reviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32A26A941E01B72C00FEC6E5 /* reviewTableViewCell.swift */; };
 		32A26A971E01D3DB00FEC6E5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A26A961E01D3DB00FEC6E5 /* StoreKit.framework */; };
+		32EB7D3C1E0384080042F2D2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32EB7D3B1E0384080042F2D2 /* AudioToolbox.framework */; };
 		32F5FB801DFC8215002521F5 /* pointDetailView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */; };
 		32F5FB821DFC82E1002521F5 /* pointDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F5FB811DFC82E1002521F5 /* pointDetailView.swift */; };
 		32FF8CE21DF7246C00A5CAA5 /* StoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FF8CE11DF7246C00A5CAA5 /* StoreViewController.swift */; };
@@ -104,6 +105,7 @@
 		32A26A921E01A7BD00FEC6E5 /* reviewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = reviewCell.xib; sourceTree = "<group>"; };
 		32A26A941E01B72C00FEC6E5 /* reviewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = reviewTableViewCell.swift; sourceTree = "<group>"; };
 		32A26A961E01D3DB00FEC6E5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		32EB7D3B1E0384080042F2D2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		32F5FB7F1DFC8215002521F5 /* pointDetailView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = pointDetailView.xib; sourceTree = "<group>"; };
 		32F5FB811DFC82E1002521F5 /* pointDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = pointDetailView.swift; sourceTree = "<group>"; };
 		32FF8CE01DF719E500A5CAA5 /* myGuideUserStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = myGuideUserStore.entitlements; sourceTree = "<group>"; };
@@ -123,6 +125,7 @@
 			files = (
 				320A1F581DFF7F6D00117D7B /* AVFoundation.framework in Frameworks */,
 				320C6D1E1DF88CD200B60430 /* CoreData.framework in Frameworks */,
+				32EB7D3C1E0384080042F2D2 /* AudioToolbox.framework in Frameworks */,
 				7B78F70EFF30A7CAA06146D3 /* Pods_myGuideUserStore.framework in Frameworks */,
 				32A26A971E01D3DB00FEC6E5 /* StoreKit.framework in Frameworks */,
 			);
@@ -228,6 +231,7 @@
 		4106B22C298A071714931533 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				32EB7D3B1E0384080042F2D2 /* AudioToolbox.framework */,
 				32A26A961E01D3DB00FEC6E5 /* StoreKit.framework */,
 				320A1F571DFF7F6D00117D7B /* AVFoundation.framework */,
 				320C6D1D1DF88CD200B60430 /* CoreData.framework */,
@@ -332,6 +336,9 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+							com.apple.InterAppAudio = {
 								enabled = 1;
 							};
 							com.apple.Keychain = {

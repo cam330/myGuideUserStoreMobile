@@ -92,6 +92,10 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var numberOfDownloads: Int!
     
+    var guideName = String()
+    
+    var tourDuration = String()
+    
     
     
     @IBOutlet var titleLabel: UILabel!
@@ -101,6 +105,9 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
         
         
         navigationController?.navigationBar.tintColor = .white
+        
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+        try? AVAudioSession.sharedInstance().setActive(true)
 
         print("HERES THE NAME", self.tourId)
 //        self.tourId = "btChJXUrUhbbJYpJuEPoZ17lfv731481298858803"
@@ -149,14 +156,23 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
 //
 //                }
                 
+                self.ref.child("users").child(self.namesArray.value(forKey: "guide")as! String).observe(.value, with: { nameSnap in
+                    print("DANAME",(nameSnap.value as! NSDictionary).value(forKey: "name")!)
+                    
+                })
+                
                 self.tourArray.insert(self.namesArray, at: 0)
                 self.tableView.reloadData()
                 
             })
 
+        
+        
         ref.child("audioSamples").child(self.tourId as String).observe(.value, with:  {sampleAudio in
-            print(sampleAudio.value as! String)
-            if sampleAudio.value != NSNull {
+            print(sampleAudio.value!)
+            
+            if sampleAudio.exists() {
+            
             
             let audioSamp = sampleAudio.value as! String
             
@@ -300,6 +316,7 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                             tour.setValue(self.namesArray.value(forKey: "title") ?? String(), forKey: "tourTitle")
                             tour.setValue(self.data, forKey: "tourPoints")
                             tour.setValue(self.audioDataData, forKey: "tourPointsAudio")
+                            tour.setValue(<#T##value: Any?##Any?#>, forKey: <#T##String#>)
                             tour.setValue(date, forKey: "expireDate")
                             
                             do{
@@ -431,16 +448,21 @@ class TourDetailViewController: UIViewController, UITableViewDelegate, UITableVi
                 return titleCell
             }
             if indexPath.row == 2 {
-                statsCell.downloadsLabel.text = "\(self.namesArray!.value(forKey: "downloads"))"
-//                let count = (self.namesArray!.value(forKey: "reviews") as AnyObject).value(forKey: "count")
-//                print(count)
-//                let total = (self.namesArray!.value(forKey: "reviews") as AnyObject).value(forKey: "total")
-//                print(total)
-//                let value = (total as! Int) / (count as! Int)
-//                print(value)
-//                statsCell.ratingView.rating = Double(value)
-                self.numberOfDownloads = 0
-                statsCell.priceLabel.text = "$\(self.namesArray!.value(forKey: "price") as! String?)"
+                statsCell.downloadsLabel.text = "\(self.namesArray!.value(forKey: "downloads")!)"
+                let count = (self.namesArray!.value(forKey: "reviews") as AnyObject).value(forKey: "count")
+                print(count!)
+                let total = (self.namesArray!.value(forKey: "reviews") as AnyObject).value(forKey: "total")
+                print(total!)
+                if count as! Int > 0 {
+                    let value = (total as! Int) / (count as! Int)
+                    print(value)
+                    statsCell.ratingView.rating = Double(value)
+                } else {
+                    statsCell.ratingView.rating = 5.0
+                    self.numberOfDownloads = 0
+                }
+                
+                statsCell.priceLabel.text = "$\(self.namesArray!.value(forKey: "price") as! String)"
                 return statsCell
             }
             if indexPath.row == 3 {

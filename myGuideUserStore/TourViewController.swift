@@ -11,7 +11,7 @@ import Firebase
 import AVFoundation
 import FirebaseAuth
 
-class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVAudioPlayerDelegate{
+class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVAudioPlayerDelegate, UITextViewDelegate{
     
     var ref: FIRDatabaseReference!
     
@@ -54,13 +54,15 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.reviewView.commentsTextView.delegate = self
+        
         navigationController?.navigationBar.tintColor = .white
         
         self.audioSlider.setThumbImage(self.generateHandleImage(with: .white), for: .normal)
         
         self.audioView.isHidden = true
         
-        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+        try? AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
         try? AVAudioSession.sharedInstance().setActive(true)
         
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(respondToSwipeGesture(gesture:)))
@@ -79,6 +81,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         self.navigationItem.rightBarButtonItem =  UIBarButtonItem(title: "End", style: .plain, target: self, action: #selector(endTourButton))
         
         let valueDict = (theTour as AnyObject).value(forKey: "tourPoints")
+        self.title = (theTour as AnyObject).value(forKey: "tourAttraction")as! String
         let tourAudioArray: NSArray? = NSKeyedUnarchiver.unarchiveObject(with: valueDict as! Data) as? NSArray
         
         self.tourPoints = NSKeyedUnarchiver.unarchiveObject(with: valueDict as! Data) as? NSArray
@@ -114,6 +117,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
             pointButton.setTitle("\(i+1)", for: .normal)
             pointButton.setTitleColor(UIColor.white, for: .normal)
             pointButton.backgroundColor = #colorLiteral(red: 0.2267478406, green: 0.8977500796, blue: 0.624830544, alpha: 1)
+            pointButton.alpha = 0.9
             pointButton.frame = CGRect(x:pointPlacementTop+5, y:pointPlacementLeft+20, width:20, height:20)
             pointButton.layer.cornerRadius = 10;
             pointButton.addTarget(self, action: #selector(pointSelect(sender:)), for: .touchUpInside)
@@ -203,12 +207,13 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         self.blurEffectView = UIVisualEffectView(effect: blurEffect)
         self.blurEffectView.frame = view.bounds
 
-        self.reviewView = ReviewView(frame: CGRect(x: self.tourMap.center.x - 125, y: self.tourMap.center.y - 175, width: 250, height: 300))
+        self.reviewView = ReviewView(frame: CGRect(x: self.tourMap.center.x - 125, y: self.tourMap.center.y - 275, width: 250, height: 300))
         self.reviewView.submitButton.addTarget(self, action: #selector(submitReview(sender:)), for: .touchUpInside)
         self.reviewView.cancelButton.addTarget(self, action: #selector(cancelReview(sender:)), for: .touchUpInside)
         self.tourMap.addSubview(blurEffectView)
         self.tourMap.addSubview(self.reviewView)
         self.tourMap.bringSubview(toFront: self.reviewView)
+
         
         self.ref.child("tours").child(tourId as! String).child("reviews").observe(.value, with: { snapshot in
             print("SNVAL", snapshot.value)
@@ -224,6 +229,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         
 //        reviewView.delegate = self
     }
+
     
     @IBAction func submitReview(sender: UIButton!) {
         navigationController?.navigationBar.isUserInteractionEnabled=true
@@ -407,6 +413,7 @@ class TourViewController: UIViewController, UINavigationBarDelegate, UIImagePick
         }
     }
     
+
     /*
     // MARK: - Navigation
 
