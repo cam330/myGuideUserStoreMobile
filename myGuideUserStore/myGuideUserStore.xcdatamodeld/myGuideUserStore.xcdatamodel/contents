@@ -6,11 +6,12 @@
         <attribute name="tourCountry" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tourDuration" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tourId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="tourKeyWords" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="tourPoints" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="tourPointsAudio" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="tourTitle" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Tour" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="Tour" positionX="-63" positionY="-18" width="128" height="180"/>
     </elements>
 </model>

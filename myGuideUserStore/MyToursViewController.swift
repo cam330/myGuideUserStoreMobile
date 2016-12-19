@@ -95,6 +95,8 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.locationLabel.text = "\((toursArray[indexPath.row] as AnyObject).value(forKey: "tourAttraction") as! String), \((toursArray[indexPath.row] as AnyObject).value(forKey: "tourCountry") as! String)"
             cell.tourId = self.objToPass.value(forKey: "tourId") as! String?
             
+            cell.duration.text = self.objToPass.value(forKey: "tourDuration")as! String?
+            
             let formatted = DateFormatter()
             formatted.dateStyle = .short
             let time = (toursArray[indexPath.row] as AnyObject).value(forKey: "expireDate")
@@ -102,6 +104,8 @@ class MyToursViewController: UIViewController, UITableViewDelegate, UITableViewD
 //            let date = NSDate(timeIntervalSince1970: time)
 //            let formattedDate = formatted.string(from:date as Date)
             cell.expireTimeLabel.text =  formatted.string(from: time as! Date)
+            
+            cell.keyWordsLabel.text = self.objToPass.value(forKey: "tourKeyWords")as? String
             return cell
         }
 

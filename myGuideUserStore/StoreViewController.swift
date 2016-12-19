@@ -63,6 +63,8 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     var countryToSelect: NSString!
     
+    var stringOfKeys = String()
+    
     let sortOptions = [
         NSSortDescriptor(key: "title", ascending: true,
                           selector: #selector(NSString.localizedCaseInsensitiveCompare(_:))),
@@ -80,10 +82,16 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
                           selector: #selector(NSString.localizedCaseInsensitiveCompare(_:))),
         
         NSSortDescriptor(key: "price", ascending: false,
-                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:)))
+                          selector: #selector(NSString.localizedCaseInsensitiveCompare(_:))),
+        
+        NSSortDescriptor(key: "duration", ascending: true,
+                         selector: #selector(NSNumber.compare(_:))),
+        
+        NSSortDescriptor(key: "duration", ascending: false,
+                         selector: #selector(NSNumber.compare(_:)))
         ]
     
-    let sortWords = ["Title(A-Z)", "Title(Z-A)", "Date Creted(Earliest)", "Date Created(Latest)", "Price(Low - High)", "Price(High - Low)"]
+    let sortWords = ["Title(A-Z)", "Title(Z-A)", "Date Creted(Earliest)", "Date Created(Latest)", "Price(Low - High)", "Price(High - Low)", "Duration(Short - Long)", "Duration(Long - Short)"]
     
     var sortBy = NSSortDescriptor()
     
@@ -373,8 +381,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             let timeInSeconds = (self.presentingArray[indexPath.row] as AnyObject).value(forKey: "duration")!
             let (h, m, s) = self.secondsToHoursMinutesSeconds(seconds: timeInSeconds as! Int)
             print ("\(h) H, \(m) M, \(s) S")
-            self.tourDuration = "⌚︎\(h):\(m):\(s)"
-            cell.durationLabel.text = "⌚︎\(h):\(m):\(s)"
+            cell.durationLabel.text = "\(h):\(m):\(s)"
             
            cell.selectionStyle = UITableViewCellSelectionStyle.none
             
@@ -391,6 +398,10 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         tableView.deselectRow(at: indexPath, animated: true)
         
         self.tourId = cell.tourId
+        self.tourDuration = cell.durationLabel.text!
+        self.stringOfKeys = cell.tourKeyWordsLabel.text!
+        
+        print("STRR",self.stringOfKeys)
         
         [self.performSegue(withIdentifier: "showTourDetails", sender: self)]
     }
@@ -419,9 +430,12 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     @IBAction func sortTable(sender: UIButton) {
+                print("PRESS", self.some)
         self.presentingArray = (self.some as NSArray).sortedArray(using: [self.sortBy]) as NSArray
         
         print("TITLE",self.presentingArray)
+        
+
         
         self.tableView.reloadData()
         self.sortPicker.removeFromSuperview()
@@ -431,6 +445,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
         navigationController?.navigationBar.isUserInteractionEnabled=true
         navigationController?.navigationBar.tintColor = .white
         
+        self.tableView.setContentOffset(CGPoint.zero, animated: true)
     }
     
     @IBAction func cancelSort(sender: UIButton) {
@@ -450,7 +465,7 @@ class StoreViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
             nextScene?.tourId = self.tourId
             nextScene?.tourDuration = self.tourDuration
-
+            nextScene?.tourKeys = self.stringOfKeys
         }
     }
  
